@@ -1,0 +1,23 @@
+{
+  "name": "proyectodb-api",
+  "version": "1.0.0",
+  "description": "API para el proyecto 02 de Base de Datos 1.",
+  "main": "app.js",
+  "scripts": {
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/guillermoSb/proyectodb-api.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/guillermoSb/proyectodb-api/issues"
+  },
+  "homepage": "https://github.com/guillermoSb/proyectodb-api#readme",
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3"
+  }
+}
