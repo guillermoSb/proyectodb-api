@@ -1,10 +1,10 @@
 // Library Imports
-const { Router } = require('express');
+import { Router } from 'express';
 // Project Imports
-const { getUsers } = require('../controllers/user');
+import { getUsers } from '../controllers/user.js';
 
 const router = Router();    // Create the router
 
 router.get('/', getUsers);  // Create the url to retreive users
 
-module.exports = router
+export default router

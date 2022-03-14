@@ -1,6 +1,8 @@
-const express = require('express');
+import express from 'express';
 
-class Server {
+import userRoutes from '../routes/user.js';
+
+export class Server {
 
     // Paths for the api endpoints
     paths = {
@@ -31,9 +33,10 @@ class Server {
         });
     }
 
+    /**
+     * Init the routes for the server
+     */
     routes() {
-        this.app.use(this.paths.users, require('../routes/user'));
+        this.app.use(this.paths.users, userRoutes); // userRoutes
     }
 }
-
-module.exports = Server

@@ -1,6 +1,7 @@
-require('dotenv').config(); // Configure the user environments
+
 // Project Imports
-const Server = require("./models/server");
+import { Server } from './models/server.js';
+
 
 const server = new Server();
 

@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "API para el proyecto 02 de Base de Datos 1.",
   "main": "app.js",
+  "type": "module",
   "scripts": {
     "dev": "nodemon app.js"
   },
@@ -19,5 +20,8 @@
   "dependencies": {
     "dotenv": "^16.0.0",
     "express": "^4.17.3"
+  },
+  "devDependencies": {
+    "eslint": "^8.11.0"
   }
 }
