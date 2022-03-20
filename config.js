@@ -23,6 +23,7 @@ const config = (function () {
             this.databaseName = getValue('DATABASE_NAME');
             this.databaseHost = getValue('DATABASE_HOST');
             this.databasePassword = getValue('DATABASE_PASSWORD');
+            this.databaseUser = getValue('DATABASE_USER');
 
         } catch (error) {
             console.log(error);

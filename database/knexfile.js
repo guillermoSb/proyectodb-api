@@ -1,3 +1,4 @@
+import config from '../config.js';
 // Update with your config settings.
 
 /**
@@ -6,9 +7,9 @@
 export const development = {
   client: 'postgresql',
   connection: {
-    host: 'localhost',
-    database: 'proyecto02',
-    user: 'postgres',
+    host: config.databaseHost,
+    database: config.databaseName,
+    user: config.databaseUser,
     port: 5432
 
   },

@@ -1,11 +1,8 @@
 import express from 'express';
-// import { DatabaseManager } from '../database/manager.js';
 
 import userRoutes from '../routes/user.js';
 
 export class Server {
-
-
 
     // Paths for the api endpoints
     paths = {
