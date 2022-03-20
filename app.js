@@ -1,7 +1,7 @@
 
 // Project Imports
 import { Server } from './models/server.js';
-
+import config from './config.js';
 
 const server = new Server();    // Create a new object of type server
 
