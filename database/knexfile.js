@@ -1,10 +1,9 @@
-import config from '../config.js';
 // Update with your config settings.
-
+import config from '../config.js';
 /**
  * @type { Object.<string, import("knex").Knex.Config> }
  */
-export const development = {
+const development = {
   client: 'postgresql',
   connection: {
     host: config.databaseHost,
@@ -13,5 +12,13 @@ export const development = {
     port: 5432
 
   },
+  migrations: {
+    tableName: 'migrations',
+    migrations: {
+      tableName: 'migrations'
+    }
+  }
 };
+
+export default development;
 

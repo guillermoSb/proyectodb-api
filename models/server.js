@@ -1,12 +1,14 @@
 import express from 'express';
 
 import userRoutes from '../routes/user.js';
+import authRoutes from '../routes/auth.js';
 
 export class Server {
 
     // Paths for the api endpoints
     paths = {
-        users: '/api/users'
+        users: '/api/users',
+        auth: '/api/auth'
     }
 
     constructor() {
@@ -38,5 +40,6 @@ export class Server {
      */
     routes() {
         this.app.use(this.paths.users, userRoutes); // userRoutes
+        this.app.use(this.paths.auth, authRoutes); // userRoutes
     }
 }

@@ -1,3 +1,5 @@
+import { DatabaseManager } from '../database/manager.js';
+import { createUser, getAllUsers } from '../models/user.js';
 
 
 /**
@@ -5,20 +7,69 @@
  * @param {*} req 
  * @param {*} res 
  */
-export const getUsers = (req, res) => {
-    res.status(200).send({
-        ok: true,
-        msg: 'Hola desde GET users'
-    });
+export const getUsers = async (req, res) => {
+    try {
+        const users = await getAllUsers();
+        res.status(200).send({
+            ok: true,
+            users
+        });
+    } catch (error) {
+        return res.status(500).send(
+            {
+                ok: false,
+                errors: [
+                    'Error al obtener usuarios.'
+                ]
+            }
+        );
+    }
+
 }
 
-export const createUser = (req, res) => {
-    let body = req.body;
+/**
+ * Create an user
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
+export const postUser = async (req, res) => {
+    // Get all the parametters from the request body
+    let { plan,
+        role,
+        user,
+        email,
+        password,
+        name,
+        lastName,
+        active
+    } = req.body;
 
-    res.status(200).send(
-        {
-            ok: true,
-            body
-        }
-    );
+    try {
+        // Run everything using a transaction
+        await DatabaseManager.knex.transaction(async transaction => {
+            // Call the database creation for user
+            let createdUser = await createUser(plan, role, user, email, password, name, lastName, active, transaction)
+
+            // Return the response
+            return res.status(201).send(
+                {
+                    ok: true,
+                    user: createdUser
+                }
+            );
+        });
+    } catch (error) {
+        return res.status(500).send(
+            {
+                ok: false,
+                errors: [
+                    'Error al crear usuario.'
+                ]
+            }
+        );
+    }
+
+
+
 }
