@@ -12,6 +12,8 @@ Integrantes
 
 - Instalar dependencias con `npm install`
 - Instalar nodemon con `npm install -g nodemon`
+- Asegurarse de tener un archivo `.env` en el folder root.
+- Ejecutar las migraciones con el comando de abajo.
 - Iniciar el servidor en localhost con `npm run dev`
 
 ## Comandos
