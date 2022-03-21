@@ -1,4 +1,4 @@
-import { DatabaseManager } from '../database/manager.js'  // Database manager
+import { hashPassword } from '../utils/password.js';
 
 /**
  * Create a new user on the database
@@ -10,23 +10,17 @@ import { DatabaseManager } from '../database/manager.js'  // Database manager
  * @param {string} name 
  * @param {string} lastName 
  * @param {string} active 
+ * @param {import("knex").Knex} transaction
  */
-export const createUser = async (plan, role, user, email, password, name, lastName, active) => {
-
-
-    const createdUser = await DatabaseManager.knex('users').insert({
-        plan,
-        role,
-        user,
-        email,
-        password,
-        name,
-        lastName,
-        active
-    })
-    if (!createdUser) {
-        return [null, 'Error al crear el usuario']
+export const createUser = async (plan, role, user, email, password, name, lastName, active, transaction) => {
+    const newPass = await hashPassword(password);
+    let userObject = {
+        user, email, password: newPass, name, lastName, active
     }
-    return [createdUser, null];
+    await transaction('users').insert({
+        ...userObject
+    })
+    delete userObject.password; // Do not return the password
+    return userObject;  // Return the created user
 
 }

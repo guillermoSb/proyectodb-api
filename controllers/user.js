@@ -1,3 +1,4 @@
+import { DatabaseManager } from '../database/manager.js';
 import { createUser } from '../models/user.js';
 
 
@@ -26,21 +27,21 @@ export const postUser = async (req, res) => {
     } = req.body;
 
     try {
-        // Call the database creation for user
-        let [createdUser, error] = await createUser(plan, role, user, email, password, name, lastName, active)
+        // Run everything using a transaction
+        await DatabaseManager.knex.transaction(async transaction => {
+            // Call the database creation for user
+            let createdUser = await createUser(plan, role, user, email, password, name, lastName, active, transaction)
 
-        // Handle the error
-        if (error) {
-            console.log('sf')
-        } else {
+            // Return the response
             return res.status(201).send(
                 {
                     ok: true,
                     user: createdUser
                 }
             );
-        }
+        });
     } catch (error) {
+        console.log(error);
         return res.status(500).send(
             {
                 ok: false,
