@@ -17,3 +17,4 @@ Integrantes
 ## Comandos
 
 - Crear migracion `npx knex migrate:make <migration_name> --esm --knexfile "database/knexfile.js"`
+- Correr migracion `npx knex migrate:latest --esm --knexfile "database/knexfile.js"`

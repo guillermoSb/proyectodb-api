@@ -6,12 +6,11 @@ export function up(knex) {
     return knex.schema
         .createTable('users', function (table) {
             table.bigIncrements('userCode', { primaryKey: true });
-            table.string('name', 255).notNullable();
             table.string('user', 20).notNullable().unique();
             table.string('email').notNullable().unique();
             table.string('password').notNullable();
             table.string('name');
-            table.string('name');
+            table.string('lastName');
             table.boolean('active').defaultTo(true, { constraintName: 'df_users_active' })
         })
 }
@@ -21,5 +20,5 @@ export function up(knex) {
  * @returns { Promise<void> }
  */
 export function down(knex) {
-
+    return knex.schema.dropTable('users');
 }
