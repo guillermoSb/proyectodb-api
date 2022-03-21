@@ -17,6 +17,9 @@ router.post('/register', [
     check('user').custom(validateUserUnique),
     validateFields
 ], registerUser);  // Retreive a list of all users
-router.post('/login', loginUser)    // Create an user
+router.post('/login', [
+    check('email', 'El correo no es valido').isEmail(),
+    check('password', 'La contraseña es requerida.').notEmpty(),
+], loginUser)    // Create an user
 
 export default router;
