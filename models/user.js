@@ -31,7 +31,6 @@ export const createUser = async (plan, role, user, email, password, name, lastNa
  * @param {import('knex').Knex} transaction 
  */
 export const createProfile = async (userCode, name, transaction) => {
-    console.log('creating profile', userCode, name);
     const profileObject = {
         userCode,
         name
@@ -56,6 +55,12 @@ export const getAllUsers = async () => {
 }
 
 
+/**
+ * Auths an user
+ * @param {string} email 
+ * @param {string} password 
+ * @returns user
+ */
 export const authUser = async (email, password) => {
     const user = await DatabaseManager.knex('users').select('*').where({ email });    // Get the user
     if (user.length != 1) return null; // Check for user not found
@@ -63,4 +68,26 @@ export const authUser = async (email, password) => {
     if (!passwordValid) return null;    // Check for password valid
     delete user.password;
     return user;
+}
+
+/**
+ * Checks if an email exists
+ * @param {string} email 
+ * @returns {boolean}
+ */
+export const checkForExistingEmail = async (email) => {
+    const existingEmail = await DatabaseManager.knex('users').select('email').where({ email });
+    return existingEmail.length > 0;    // Return a boolean indicating if an email was found
+
+}
+
+/**
+ * Checks if an user exists
+ * @param {string} user 
+ * @returns {boolean}
+ */
+export const checkForExistingUser = async (user) => {
+    const existingUser = await DatabaseManager.knex('users').select('email').where({ user });
+    return existingUser.length > 0;    // Return a boolean indicating if an email was found
+
 }
