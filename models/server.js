@@ -1,7 +1,7 @@
 import express from 'express';
 
 import userRoutes from '../routes/user.js';
-import authRoutes from '../routes/user.js';
+import authRoutes from '../routes/auth.js';
 
 export class Server {
 
