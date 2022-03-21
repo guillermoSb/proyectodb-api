@@ -66,7 +66,7 @@ export const authUser = async (email, password) => {
     if (user.length != 1) return null; // Check for user not found
     const passwordValid = await checkPassword(password, user[0].password);
     if (!passwordValid) return null;    // Check for password valid
-    delete user.password;
+    delete user[0].password;
     return user;
 }
 

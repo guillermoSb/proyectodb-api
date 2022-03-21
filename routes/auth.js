@@ -20,6 +20,7 @@ router.post('/register', [
 router.post('/login', [
     check('email', 'El correo no es valido').isEmail(),
     check('password', 'La contraseña es requerida.').notEmpty(),
+    validateFields
 ], loginUser)    // Create an user
 
 export default router;
