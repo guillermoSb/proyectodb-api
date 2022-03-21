@@ -27,6 +27,12 @@ export const getUsers = async (req, res) => {
 
 }
 
+/**
+ * Create an user
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
 export const postUser = async (req, res) => {
     // Get all the parametters from the request body
     let { plan,
