@@ -1,10 +1,19 @@
 import * as dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+
 /**
  * Config object prototype
  */
 const config = (function () {
     function AppConfig() {
-        dotenv.config();    // Get the object
+        const __filename = fileURLToPath(import.meta.url);
+        console.log('FILENAME', __filename)
+        const __dirname = path.dirname(__filename);
+        dotenv.config({
+            path: path.resolve(__dirname + '/.env')
+        });
 
         /**
          * Get a value from the environment
@@ -20,8 +29,8 @@ const config = (function () {
             return process.env[key]
         }
         try {
-            this.databaseName = getValue('DATABASE_NAME');
             this.databaseHost = getValue('DATABASE_HOST');
+            this.databaseName = getValue('DATABASE_NAME');
             this.databasePassword = getValue('DATABASE_PASSWORD');
             this.databaseUser = getValue('DATABASE_USER');
 
@@ -33,7 +42,7 @@ const config = (function () {
 
     }
     /**
-     * @type {{databaseName: string, databaseHost: string, databasePassword:string}}
+     * @type {{databaseName: string, databaseHost: string, databasePassword:string, databaseUser: string}}
      */
     let instance;
     return {

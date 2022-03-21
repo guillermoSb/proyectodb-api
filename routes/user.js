@@ -1,11 +1,11 @@
 // Library Imports
 import { Router } from 'express';
 // Project Imports
-import { createUser, getUsers } from '../controllers/user.js';
+import { postUser, getUsers } from '../controllers/user.js';
 
 const router = Router();    // Create the router
 
-router.get('/', getUsers);  // Create the url to retreive users
-router.post('/', createUser)
+router.get('/', getUsers);  // Retreive a list of all users
+router.post('/', postUser)    // Create an user
 
-export default router
+export default router;

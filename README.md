@@ -13,3 +13,7 @@ Integrantes
 - Instalar dependencias con `npm install`
 - Instalar nodemon con `npm install -g nodemon`
 - Iniciar el servidor en localhost con `npm run dev`
+
+## Comandos
+
+- Crear migracion `npx knex migrate:make <migration_name> --esm --knexfile "database/knexfile.js"`
