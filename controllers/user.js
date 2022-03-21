@@ -1,5 +1,5 @@
 import { DatabaseManager } from '../database/manager.js';
-import { createUser } from '../models/user.js';
+import { createUser, getAllUsers } from '../models/user.js';
 
 
 /**
@@ -7,11 +7,24 @@ import { createUser } from '../models/user.js';
  * @param {*} req 
  * @param {*} res 
  */
-export const getUsers = (req, res) => {
-    res.status(200).send({
-        ok: true,
-        msg: 'Hola desde GET users'
-    });
+export const getUsers = async (req, res) => {
+    try {
+        const users = await getAllUsers();
+        res.status(200).send({
+            ok: true,
+            users
+        });
+    } catch (error) {
+        return res.status(500).send(
+            {
+                ok: false,
+                errors: [
+                    'Error al obtener usuarios.'
+                ]
+            }
+        );
+    }
+
 }
 
 export const postUser = async (req, res) => {
@@ -41,15 +54,14 @@ export const postUser = async (req, res) => {
             );
         });
     } catch (error) {
-        console.log(error);
         return res.status(500).send(
             {
                 ok: false,
                 errors: [
-                    'No se pudo crear un usuario.'
+                    'Error al crear usuario.'
                 ]
             }
-        )
+        );
     }
 
 

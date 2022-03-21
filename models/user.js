@@ -1,3 +1,4 @@
+import { DatabaseManager } from '../database/manager.js';
 import { hashPassword } from '../utils/password.js';
 
 /**
@@ -23,4 +24,15 @@ export const createUser = async (plan, role, user, email, password, name, lastNa
     delete userObject.password; // Do not return the password
     return userObject;  // Return the created user
 
+}
+
+
+export const getAllUsers = async () => {
+    const users = (await DatabaseManager.knex('users').select('*')).map(dbUser => {
+        return {
+            ...dbUser,
+            password: undefined
+        }
+    })
+    return users;
 }
