@@ -4,7 +4,7 @@ import { check } from 'express-validator';
 // Project Imports
 import { registerUser, loginUser } from '../controllers/auth.js';
 import { validateFields } from '../middlewares/request-validator.js';
-import { validateEmailUnique, validateUserUnique } from '../utils/request-validators.js';
+import { validateEmailUnique, validateUserUnique } from '../utils/custom-validators.js';
 
 const router = Router();    // Create the router
 
