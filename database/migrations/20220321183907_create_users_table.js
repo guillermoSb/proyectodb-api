@@ -11,7 +11,7 @@ export function up(knex) {
             table.string('password').notNullable();
             table.string('name');
             table.string('lastName');
-            table.boolean('active').defaultTo(true, { constraintName: 'df_users_active' })
+            table.boolean('active').defaultTo(true, { constraintName: 'df_users_active' }).notNullable();
         })
 }
 
