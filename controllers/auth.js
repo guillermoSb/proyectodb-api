@@ -1,5 +1,5 @@
 import { DatabaseManager } from '../database/manager.js';
-import { createUser, createProfile } from '../models/user.js';
+import { createUser, createProfile, authUser } from '../models/user.js';
 
 
 /**
@@ -9,7 +9,7 @@ import { createUser, createProfile } from '../models/user.js';
  */
 export const registerUser = async (req, res) => {
     // Get all the parametters from the request body
-    let { plan,
+    const { plan,
         role,
         user,
         email,
@@ -36,7 +36,6 @@ export const registerUser = async (req, res) => {
             );
         });
     } catch (error) {
-        console.log(error);
         return res.status(500).send(
             {
                 ok: false,
@@ -54,5 +53,32 @@ export const registerUser = async (req, res) => {
  * @param {*} res 
  */
 export const loginUser = async (req, res) => {
-
+    const { email, password } = req.body;
+    try {
+        let loginUser = await authUser(email, password);
+        if (!loginUser) {
+            return res.status(401).send({
+                ok: false,
+                errors: [
+                    'Credenciales incorrectas.'
+                ]
+            })
+        }
+        return res.status(200).send(
+            {
+                ok: true,
+                user: loginUser
+            }
+        );
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send(
+            {
+                ok: false,
+                errors: [
+                    'Error al intentar login.'
+                ]
+            }
+        );
+    }
 };

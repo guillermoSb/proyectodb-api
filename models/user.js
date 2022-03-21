@@ -1,5 +1,5 @@
 import { DatabaseManager } from '../database/manager.js';
-import { hashPassword } from '../utils/password.js';
+import { checkPassword, hashPassword } from '../utils/password.js';
 
 /**
  * Create a new user on the database
@@ -53,4 +53,14 @@ export const getAllUsers = async () => {
         }
     })
     return users;
+}
+
+
+export const authUser = async (email, password) => {
+    const user = await DatabaseManager.knex('users').select('*').where({ email });    // Get the user
+    if (user.length != 1) return null; // Check for user not found
+    const passwordValid = await checkPassword(password, user[0].password);
+    if (!passwordValid) return null;    // Check for password valid
+    delete user.password;
+    return user;
 }
