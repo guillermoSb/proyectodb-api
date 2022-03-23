@@ -1,7 +1,7 @@
 // Library Imports
 import { Router } from 'express';
 // Project Imports
-import { postUser, getUsers, getProfilesByUserId } from '../controllers/user.js';
+import { postUser, getUsers, getProfilesByUserId, postProfileByUserId } from '../controllers/user.js';
 import { check, param } from 'express-validator';
 import { validateFields } from '../middlewares/request-validator.js';
 import { validateEmailUnique, validateUserUnique, validateUserExists } from '../utils/custom-validators.js';
@@ -29,6 +29,18 @@ router.get(
     param('userCode').custom(validateUserExists),
     validateFields
 ],
-    getProfilesByUserId)
+    getProfilesByUserId)    // Get user profiles
+
+router.post(
+    '/:userCode/profiles', [
+    param('userCode', 'El userCode debe ser un numero').isNumeric(),
+    param('userCode').custom(validateUserExists),
+    check('name', 'El nombre del perfil es necesario').notEmpty(),
+    validateFields
+],
+    postProfileByUserId
+)
+
+
 
 export default router;

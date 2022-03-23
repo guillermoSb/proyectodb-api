@@ -22,10 +22,15 @@ export const validateUserUnique = async (user = '') => {
     }
 }
 
-
-export const validateUserExists = async (userCode = '') => {
-    const userExists = await checkForExistingUser({ userCode });
-    if (!userExists) {
-        throw new Error(`El usuario ${userCode} no existe.`);
+/**
+ * Validates if the user exists by user code
+ * @param {*} userCode 
+ */
+export const validateUserExists = async (userCode) => {
+    if (!isNaN(userCode)) {
+        const userExists = await checkForExistingUser({ userCode });
+        if (!userExists) {
+            throw new Error(`El usuario ${userCode} no existe.`);
+        }
     }
 }
