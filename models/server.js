@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 
 import userRoutes from '../routes/user.js';
 import authRoutes from '../routes/auth.js';
@@ -13,8 +14,16 @@ export class Server {
 
     constructor() {
         this.app = express();   // Create the express application
+        this.cors();    // Config cors
         this.middlewares(); // Init the common middlewares
         this.routes();  // Init the routes
+    }
+
+    /**
+     * Cors
+     */
+    cors() {
+        this.app.use(cors())
     }
 
     /**
