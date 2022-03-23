@@ -10,7 +10,7 @@ const development = {
     database: config.databaseName,
     user: config.databaseUser,
     password: config.databasePassword,
-    port: 5432
+    port: config.databasePort,
   },
   migrations: {
     tableName: 'migrations',

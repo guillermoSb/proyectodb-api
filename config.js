@@ -1,4 +1,5 @@
 import * as dotenv from 'dotenv';
+import { type } from 'os';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -33,6 +34,7 @@ const config = (function () {
             this.databaseName = getValue('DATABASE_NAME');
             this.databasePassword = getValue('DATABASE_PASSWORD');
             this.databaseUser = getValue('DATABASE_USER');
+            this.databasePort = getValue('DATABASE_PORT');
 
         } catch (error) {
             console.log(error);
