@@ -9,8 +9,8 @@ const development = {
     host: config.databaseHost,
     database: config.databaseName,
     user: config.databaseUser,
+    password: config.databasePassword,
     port: 5432
-
   },
   migrations: {
     tableName: 'migrations',
