@@ -1,5 +1,5 @@
 import { DatabaseManager } from '../database/manager.js';
-import { createUser, getAllUsers } from '../models/user.js';
+import { createProfile, createUser, getAllUsers, getUserProfiles } from '../models/user.js';
 
 
 /**
@@ -72,4 +72,65 @@ export const postUser = async (req, res) => {
 
 
 
+}
+
+
+/**
+ * Gets profiles by user
+ * @param {*} req 
+ * @param {*} res 
+ */
+export const getProfilesByUserId = async (req, res) => {
+    const { userCode } = req.params;  // user code to search profiles
+    try {
+        const profiles = await getUserProfiles(userCode);    // Get the profiles
+        res.status(200).send({
+            ok: true,
+            profiles
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send(
+            {
+                ok: false,
+                errors: [
+                    'Error al obtener perfiles del usuario.'
+                ]
+            }
+        );
+    }
+}
+
+
+/**
+ * Post an user profile
+ * @param {*} req 
+ * @param {*} res 
+ */
+export const postProfileByUserId = async (req, res) => {
+    const { userCode } = req.params;  // userCode
+    const { name } = req.body;    // Profile name
+    try {
+        await DatabaseManager.knex.transaction(async transaction => {
+            // Call the database creation for user
+            const createdProfile = await createProfile(userCode, name, transaction)
+            // Return the response
+            return res.status(201).send(
+                {
+                    ok: true,
+                    profile: createdProfile
+                }
+            );
+        });
+
+    } catch (error) {
+        return res.status(500).send(
+            {
+                ok: false,
+                errors: [
+                    'Error al crear perfil para el usuario.'
+                ]
+            }
+        );
+    }
 }
