@@ -1,5 +1,4 @@
 import * as dotenv from 'dotenv';
-import { type } from 'os';
 import path from 'path';
 import { fileURLToPath } from 'url';
 

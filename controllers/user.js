@@ -1,5 +1,5 @@
 import { DatabaseManager } from '../database/manager.js';
-import { createUser, getAllUsers } from '../models/user.js';
+import { createUser, getAllUsers, getUserProfiles } from '../models/user.js';
 
 
 /**
@@ -72,4 +72,31 @@ export const postUser = async (req, res) => {
 
 
 
+}
+
+
+/**
+ * Gets profiles by user
+ * @param {*} req 
+ * @param {*} res 
+ */
+export const getProfilesByUserId = async (req, res) => {
+    const { userCode } = req.params;  // user code to search profiles
+    try {
+        const profiles = await getUserProfiles(userCode);    // Get the profiles
+        res.status(200).send({
+            ok: true,
+            profiles
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send(
+            {
+                ok: false,
+                errors: [
+                    'Error al obtener perfiles del usuario.'
+                ]
+            }
+        );
+    }
 }

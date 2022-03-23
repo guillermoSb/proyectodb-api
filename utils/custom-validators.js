@@ -16,8 +16,16 @@ export const validateEmailUnique = async (email = '') => {
  * @param {string} user
  */
 export const validateUserUnique = async (user = '') => {
-    const userExists = await checkForExistingUser(user);
+    const userExists = await checkForExistingUser({ user });
     if (userExists) {
         throw new Error(`El usuario ${user} ya existe.`);
+    }
+}
+
+
+export const validateUserExists = async (userCode = '') => {
+    const userExists = await checkForExistingUser({ userCode });
+    if (!userExists) {
+        throw new Error(`El usuario ${userCode} no existe.`);
     }
 }

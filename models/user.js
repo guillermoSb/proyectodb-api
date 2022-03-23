@@ -86,8 +86,18 @@ export const checkForExistingEmail = async (email) => {
  * @param {string} user 
  * @returns {boolean}
  */
-export const checkForExistingUser = async (user) => {
-    const existingUser = await DatabaseManager.knex('users').select('email').where({ user });
+export const checkForExistingUser = async (where) => {
+    const existingUser = await DatabaseManager.knex('users').select('email').where({ ...where });
     return existingUser.length > 0;    // Return a boolean indicating if an email was found
 
+}
+
+
+/**
+ * Get the profiles from an user
+ * @param {*} userCode 
+ */
+export const getUserProfiles = async (userCode) => {
+    const profiles = await DatabaseManager.knex('profiles').select('*').where({ userCode });
+    return profiles;
 }
