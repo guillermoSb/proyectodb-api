@@ -9,7 +9,6 @@ import { fileURLToPath } from 'url';
 const config = (function () {
     function AppConfig() {
         const __filename = fileURLToPath(import.meta.url);
-        console.log('FILENAME', __filename)
         const __dirname = path.dirname(__filename);
         dotenv.config({
             path: path.resolve(__dirname + '/.env')
