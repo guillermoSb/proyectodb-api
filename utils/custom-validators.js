@@ -1,4 +1,4 @@
-import { checkForExistingEmail, checkForExistingUser } from '../models/user.js'
+import { checkForExistingEmail, checkForExistingUser, getUser, getUserProfiles } from '../models/user.js'
 
 /**
  * Validates if an email is unique
@@ -33,4 +33,22 @@ export const validateUserExists = async (userCode) => {
             throw new Error(`El usuario ${userCode} no existe.`);
         }
     }
+}
+
+/**
+ * Get the user code
+ * @param {number} userCode 
+ */
+export const validateMaxProfiles = async (userCode) => {
+
+    const user = await getUser(userCode);   // Get the user information
+
+    if (!user) {
+        throw new Error(`Este usuario no es valido para crear un perfil ${userCode}.`);
+    }
+    const profiles = await getUserProfiles(userCode);
+    if (profiles.length >= user.plan.profileCount) {
+        throw new Error('Se ha exedido el límite de perfiles para este plan.');
+    }
+
 }

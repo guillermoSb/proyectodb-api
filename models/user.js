@@ -25,6 +25,36 @@ export const createUser = async (plan, role, user, email, password, name, lastNa
 }
 
 /**
+ * Get the plan of this user
+ */
+export const getUser = async (userCode) => {
+    const users = (await DatabaseManager.knex('users').select('*').where({ userCode }).leftJoin('plans', 'users.plan', 'plans.name'));
+    if (users.length <= 0) {
+        return null;
+    }
+    delete users[0].password
+
+
+    const { userCode: code, user, email, name, lastName, active, plan, profileCount } = users[0];
+
+    const userObject = {
+        userCode: code,
+        user,
+        email,
+        name,
+        lastName,
+        active,
+        plan: {
+            plan,
+            profileCount
+        }
+    }
+
+    return users ? userObject : null;
+
+}
+
+/**
  * 
  * @param {string} userCode 
  * @param {string} name 

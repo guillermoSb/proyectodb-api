@@ -4,7 +4,7 @@ import { Router } from 'express';
 import { postUser, getUsers, getProfilesByUserId, postProfileByUserId } from '../controllers/user.js';
 import { check, param } from 'express-validator';
 import { validateFields } from '../middlewares/request-validator.js';
-import { validateEmailUnique, validateUserUnique, validateUserExists } from '../utils/custom-validators.js';
+import { validateEmailUnique, validateUserUnique, validateUserExists, validateMaxProfiles } from '../utils/custom-validators.js';
 
 const router = Router();    // Create the router
 
@@ -37,6 +37,7 @@ router.post(
     '/:userCode/profiles', [
     param('userCode', 'El userCode debe ser un numero').isNumeric(),
     param('userCode').custom(validateUserExists),
+    param('userCode').custom(validateMaxProfiles),
     check('name', 'El nombre del perfil es necesario').notEmpty(),
     validateFields
 ],
