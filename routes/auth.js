@@ -13,6 +13,8 @@ router.post('/register', [
     check('user', 'El nombre de usuario es requerido.').notEmpty(),
     check('password', 'La contraseña es requerida.').notEmpty(),
     check('password', 'La contraseña debe de tener al menos 6 caracteres.').isLength({ min: 6 }),
+    check('plan', 'El plan es requerido.').notEmpty(),
+    check('plan', 'Las opciones válidas para un plan son: basic, standard o advanced').isIn(['basic', 'standard', 'advanced']),
     check('email').custom(validateEmailUnique),
     check('user').custom(validateUserUnique),
     validateFields
