@@ -1,4 +1,5 @@
 import { DatabaseManager } from '../database/manager.js';
+import { generarJWT } from '../helpers/generar-jwt.js';
 import { createUser, createProfile, authUser } from '../models/user.js';
 
 
@@ -64,10 +65,14 @@ export const loginUser = async (req, res) => {
                 ]
             })
         }
+
+        const token = await generarJWT(loginUser.userCode);
+
         return res.status(200).send(
             {
                 ok: true,
-                user: loginUser
+                user: loginUser,
+                token
             }
         );
     } catch (error) {
