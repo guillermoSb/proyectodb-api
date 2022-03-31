@@ -26,6 +26,7 @@ export const createUser = async (plan, role, user, email, password, name, lastNa
 
 /**
  * Get the plan of this user
+ * @param {string} userCode 
  */
 export const getUser = async (userCode) => {
     const users = (await DatabaseManager.knex('users').select('*').where({ userCode }).leftJoin('plans', 'users.plan', 'plans.name'));
