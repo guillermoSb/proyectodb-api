@@ -101,6 +101,18 @@ export const authUser = async (email, password) => {
 }
 
 /**
+ * Auths an user
+ * @param {string} userCode 
+ * @returns user
+ */
+ export const authUserWithToken = async (userCode) => {
+    const user = await DatabaseManager.knex('users').select('*').where({ userCode });    // Get the user
+    if (user.length != 1) return null; // Check for user not found
+    delete user[0].password;
+    return user;
+}
+
+/**
  * Checks if an email exists
  * @param {string} email 
  * @returns {boolean}

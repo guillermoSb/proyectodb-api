@@ -27,7 +27,7 @@ router.post(
     postUser
 );    // Create an user
 router.get(
-    '/:userCode/profiles', [
+    '/:userCode/profiles', [validarJWT] ,[
     param('userCode', 'El userCode debe ser un numero').isNumeric(),
     param('userCode').custom(validateUserExists),
     validateFields
@@ -35,7 +35,7 @@ router.get(
     getProfilesByUserId)    // Get user profiles
 
 router.post(
-    '/:userCode/profiles', [
+    '/:userCode/profiles', [validarJWT] , [
     param('userCode', 'El userCode debe ser un numero').isNumeric(),
     param('userCode').custom(validateUserExists),
     param('userCode').custom(validateMaxProfiles),

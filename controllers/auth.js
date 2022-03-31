@@ -66,7 +66,7 @@ export const loginUser = async (req, res) => {
             })
         }
 
-        const token = await generarJWT(loginUser.userCode);
+        const token = await generarJWT(loginUser[0].userCode);
 
         return res.status(200).send(
             {
