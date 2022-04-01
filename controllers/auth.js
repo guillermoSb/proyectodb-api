@@ -26,13 +26,18 @@ export const registerUser = async (req, res) => {
             // Call the database creation for user
             let createdUser = await createUser(plan, role, user, email, password, name, lastName, active, transaction)
             // Create default profile
+
             let createdProfile = await createProfile(createdUser.userCode, createdUser.user, transaction);
             // Return the response
+
+            const token = await generarJWT(createdUser.userCode);
+
             return res.status(201).send(
                 {
                     ok: true,
                     user: createdUser,
-                    profile: createdProfile
+                    profile: createdProfile,
+                    token
                 }
             );
         });
