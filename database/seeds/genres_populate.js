@@ -2,7 +2,7 @@
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> } 
  */
-exports.seed = async function(knex) {
+ export async function seed(knex) {
   // Deletes ALL existing entries
   await knex('genres').del()
   await knex('genres').insert([
@@ -15,5 +15,8 @@ exports.seed = async function(knex) {
     {name: 'romance'},
     {name: 'thriller'},
     {name: 'western'},
+    {name: 'family'},
+    {name: 'sci-fy'},
+    {name: 'adventure'},
   ]);
 };

@@ -1,5 +1,5 @@
 import { DatabaseManager } from '../database/manager.js';
-import { getAllFavoriteMovies, getAllMoviesByGenre } from '../models/content.js';
+import { getAllFavoriteMovies, getAllMoviesByGenre, getAllMovies } from '../models/content.js';
 
 /**
  * Retreive all the users
@@ -83,9 +83,34 @@ export const getMoviesByGenre = async (req, res) => {
  * @param {*} req 
  * @param {*} res 
  */
-export const prueba = (req,res) => {
-    res.status(200).send({
-        ok: true,
-        msg: 'prueba'
-    });
+export const getMovies = async (req,res) => {
+    try {
+        const movies = await getAllMovies();
+
+        if (movies.length === 0) {
+            res.status(200).send({
+                ok: false,
+                errors: [
+                    'No hay películas en la base de datos'
+                ]
+            });
+        } else {
+
+            res.status(200).send({
+                ok: true,
+                movies
+            });
+        
+        }
+
+    } catch (error) {
+        return res.status(500).send(
+            {
+                ok: false,
+                errors: [
+                    'Error al obtener películas.'
+                ]
+            }
+        );
+    }
 }

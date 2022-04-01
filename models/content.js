@@ -24,6 +24,14 @@ export const getAllMoviesByGenre = async (genre) => {
 
 }
 
+export const getAllMovies = async () => {
+
+    const movies = await DatabaseManager.knex('movies').select('*');
+
+    return movies;
+
+}
+
 
 
  export const getAllGenres = async () => {
