@@ -2,7 +2,7 @@
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-exports.up = function(knex) {
+ export function up(knex) {
     return knex.schema
     .createTable('directors', (table) => {
         table.bigIncrements('directorCode', { primaryKey: true });
@@ -15,6 +15,6 @@ exports.up = function(knex) {
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-exports.down = function(knex) {
+ export function down(knex) {
   
 };

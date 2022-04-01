@@ -2,10 +2,10 @@
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-exports.up = function(knex) {
+ export function up(knex) {
     return knex.schema
     .createTable('genres', (table) => {
-        table.string('name', { primaryKey: true })
+        table.string('name', { primaryKey: true }).unique();
     })
 };
 
@@ -13,6 +13,6 @@ exports.up = function(knex) {
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-exports.down = function(knex) {
+ export function down(knex) {
   
 };
