@@ -3,13 +3,15 @@ import cors from 'cors';
 
 import userRoutes from '../routes/user.js';
 import authRoutes from '../routes/auth.js';
+import contentRoutes from '../routes/content.js'
 
 export class Server {
 
     // Paths for the api endpoints
     paths = {
         users: '/api/users',
-        auth: '/api/auth'
+        auth: '/api/auth',
+        content: '/api/content'
     }
 
     constructor() {
@@ -50,5 +52,6 @@ export class Server {
     routes() {
         this.app.use(this.paths.users, userRoutes); // userRoutes
         this.app.use(this.paths.auth, authRoutes); // userRoutes
+        this.app.use(this.paths.content, contentRoutes); //ContentRoutes
     }
 }
