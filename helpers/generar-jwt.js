@@ -1,11 +1,11 @@
 
 import jwt from 'jsonwebtoken'
 
-export const generarJWT = ( uid = '') => {
+export const generarJWT = ( userCode = '') => {
 
     return new Promise( (resolve, reject) => {
 
-        const payload = { uid }
+        const payload = { userCode }
 
 
         jwt.sign( payload, process.env.SECRETORPRIVATEKEY, {

@@ -33,6 +33,7 @@ const config = (function () {
             this.databasePassword = getValue('DATABASE_PASSWORD');
             this.databaseUser = getValue('DATABASE_USER');
             this.databasePort = getValue('DATABASE_PORT');
+            this.secretprivatekey = getValue('SECRETORPRIVATEKEY')
 
         } catch (error) {
             console.log(error);
