@@ -4,11 +4,12 @@ import { Router } from 'express';
 import { postUser, getUsers, getProfilesByUserId, postProfileByUserId } from '../controllers/user.js';
 import { check, param } from 'express-validator';
 import { validateFields } from '../middlewares/request-validator.js';
+import { validarJWT } from '../middlewares/validar-jwt.js';
 import { validateEmailUnique, validateUserUnique, validateUserExists, validateMaxProfiles } from '../utils/custom-validators.js';
 
 const router = Router();    // Create the router
 
-router.get('/', getUsers);  // Retreive a list of all users
+router.get('/', [validarJWT],getUsers);  // Retreive a list of all users
 router.post(
     '/',
     [
@@ -26,7 +27,7 @@ router.post(
     postUser
 );    // Create an user
 router.get(
-    '/:userCode/profiles', [
+    '/:userCode/profiles', [validarJWT] ,[
     param('userCode', 'El userCode debe ser un numero').isNumeric(),
     param('userCode').custom(validateUserExists),
     validateFields
@@ -34,7 +35,7 @@ router.get(
     getProfilesByUserId)    // Get user profiles
 
 router.post(
-    '/:userCode/profiles', [
+    '/:userCode/profiles', [validarJWT] , [
     param('userCode', 'El userCode debe ser un numero').isNumeric(),
     param('userCode').custom(validateUserExists),
     param('userCode').custom(validateMaxProfiles),

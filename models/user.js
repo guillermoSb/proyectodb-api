@@ -18,6 +18,7 @@ export const createUser = async (plan, role, user, email, password, name, lastNa
     const userObject = {
         user, email, password: newPass, name, lastName, active, plan
     }
+
     const dbUser = await transaction('users').insert(userObject, ['*']);    // Create the user on the db
     delete dbUser[0].password; // Do not return the password
     return dbUser[0];  // Return the created user
@@ -96,6 +97,18 @@ export const authUser = async (email, password) => {
     if (user.length != 1) return null; // Check for user not found
     const passwordValid = await checkPassword(password, user[0].password);
     if (!passwordValid) return null;    // Check for password valid
+    delete user[0].password;
+    return user;
+}
+
+/**
+ * Auths an user
+ * @param {string} userCode 
+ * @returns user
+ */
+ export const authUserWithToken = async (userCode) => {
+    const user = await DatabaseManager.knex('users').select('*').where({ userCode });    // Get the user
+    if (user.length != 1) return null; // Check for user not found
     delete user[0].password;
     return user;
 }
