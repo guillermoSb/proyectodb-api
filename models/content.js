@@ -41,3 +41,28 @@ export const getAllMovies = async () => {
     return genres;
 
 }
+
+
+/**
+ * @param {string} profileCode
+ * @param {string} movieCode
+ */
+
+ export const addNewFavoriteMovie = async (profileCode,movieCode,transaction) => {
+
+    await transaction('favorites_movies').insert({profileCode,movieCode}, ['*']);
+
+}
+
+
+/**
+ * @param {string} movieCode
+ */
+
+ export const checkMovie = async (movieCode) => {
+
+    const movies = await DatabaseManager.knex('movies').where({ movieCode })
+
+    return movies;
+
+}
