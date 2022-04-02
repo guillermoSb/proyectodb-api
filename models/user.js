@@ -132,3 +132,13 @@ export const getUserProfiles = async (userCode) => {
     const profiles = await DatabaseManager.knex('profiles').select('*').where({ userCode });
     return profiles;
 }
+
+
+/**
+ * Get the profiles from an user
+ * @param {*} profileCode 
+ */
+ export const checkProfile = async (profileCode) => {
+    const profiles = await DatabaseManager.knex('profiles').select('*').where({ profileCode });
+    return profiles;
+}

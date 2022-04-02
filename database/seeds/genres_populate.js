@@ -15,5 +15,8 @@ export async function seed(knex) {
     { name: 'romance' },
     { name: 'thriller' },
     { name: 'western' },
+    { name: 'family' },
+    { name: 'sci-fy' },
+    { name: 'adventure' },
   ]);
 };
