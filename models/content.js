@@ -185,6 +185,20 @@ export const getAllFavoriteSeries = async (profileCode) => {
         .leftJoin('series', 'favorite_series.seriesCode', 'series.seriesCode')
         .where({ profileCode })
 
-    )
+    );
+}
 
+/**
+ * Get series by code
+ * @param {number} seriesCode 
+ */
+export const getSeriesById = async (seriesCode) => {
+    const series = await DatabaseManager
+        .knex('series').select('*').where({ seriesCode });
+
+    if (series.length !== 0) {
+        const episodes = await DatabaseManager.knex('episodes').select('name', 'season', 'datePublished').where({ seriesCode });
+        series[0]['episodes'] = episodes;
+        return series;
+    } else { return null; }
 }
