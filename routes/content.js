@@ -6,7 +6,7 @@ import {
     getSeriesByGenre
 } from '../controllers/content.js';
 import { validateFields } from '../middlewares/request-validator.js';
-import { getAllGenres } from '../models/content.js';
+//import { getAllGenres } from '../models/content.js';
 import {
     validateCategoryExists, validateGenreExists, validateUserExists, validStudioCode, validDirectorCode
 } from '../utils/custom-validators.js';
