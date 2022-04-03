@@ -27,6 +27,7 @@ export const createUser = async (plan, role, user, email, password, name, lastNa
 
 /**
  * Get the plan of this user
+ * @param {string} userCode 
  */
 export const getUser = async (userCode) => {
     const users = (await DatabaseManager.knex('users').select('*').where({ userCode }).leftJoin('plans', 'users.plan', 'plans.name'));
@@ -136,11 +137,33 @@ export const checkForExistingUser = async (where) => {
 }
 
 
+
+/**
+ * Checks if an user exists
+ * @param {string} user 
+ * @returns {boolean}
+ */
+export const checkForExistingProfile = async (where) => {
+    const existingUser = await DatabaseManager.knex('profiles').select('name').where({ ...where });
+    return existingUser.length > 0;    // Return a boolean indicating if an email was found
+
+}
+
 /**
  * Get the profiles from an user
  * @param {*} userCode 
  */
 export const getUserProfiles = async (userCode) => {
     const profiles = await DatabaseManager.knex('profiles').select('*').where({ userCode });
+    return profiles;
+}
+
+
+/**
+ * Get the profiles from an user
+ * @param {*} profileCode 
+ */
+export const checkProfile = async (profileCode) => {
+    const profiles = await DatabaseManager.knex('profiles').select('*').where({ profileCode });
     return profiles;
 }
