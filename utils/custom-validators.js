@@ -1,5 +1,5 @@
 import { getallCategories, getAllGenres, getStudio, getDirector } from '../models/content.js';
-import { checkForExistingEmail, checkForExistingUser, getUser, getUserProfiles } from '../models/user.js'
+import { checkForExistingEmail, checkForExistingProfile, checkForExistingUser, getUser, getUserProfiles } from '../models/user.js'
 
 /**
  * Validates if an email is unique
@@ -35,6 +35,20 @@ export const validateUserExists = async (userCode) => {
         }
     }
 }
+
+/**
+ * Validates that the profile exists
+ * @param {*} profileCode 
+ */
+export const validateProfileExists = async (profileCode) => {
+    if (!isNaN(profileCode)) {
+        const profileExists = await checkForExistingProfile({ profileCode });
+        if (!profileExists) {
+            throw new Error(`El perfil ${profileCode} no existe.`);
+        }
+    }
+}
+
 
 /**
  * Get the user code

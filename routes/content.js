@@ -4,11 +4,14 @@ import { check, param } from 'express-validator';
 import {
     getFavouriteMovies, getMoviesByGenre, getMovies, addFavorite, postSeries, getSeries,
     getSeriesByGenre,
+    getFavoriteSeries,
+    addFavoriteSeries,
+    removeFavoriteSeries,
 } from '../controllers/content.js';
 import { validateFields } from '../middlewares/request-validator.js';
 import { getAllGenres } from '../models/content.js';
 import {
-    validateCategoryExists, validateGenreExists, validateUserExists, validStudioCode, validDirectorCode
+    validateCategoryExists, validateGenreExists, validateUserExists, validStudioCode, validDirectorCode, validateProfileExists
 } from '../utils/custom-validators.js';
 
 const router = Router();
@@ -51,10 +54,22 @@ router.post('/series', [
     check('seasonCount').isInt({ min: 1 }),
     validateFields
 ], postSeries); // Post a series
-router.post('/series/:seriesCode/')
-// router.get('/series/:profleCode/favorites', getFavoriteSeries);    // Get favorites for specific profile code
-router.post('/series/:profleCode/favorites');    // Post favorites to specific profile code
-router.delete('/series/:profleCode/favorites');    // Delete a specific series from the favorites
+router.get(
+    '/series/:profleCode/favorites',
+    [
+        param('profileCode', 'El codigo del perfil no es valido').custom(validateProfileExists),
+    ],
+    getFavoriteSeries);    // Get favorites for specific profile code
+router.post('/series/:profleCode/favorites',
+    [
+        param('profileCode', 'El codigo del perfil no es valido').custom(validateProfileExists),
+        check('seriesCode', 'El codigo de la serie es requerido').notEmpty()
+    ],
+    addFavoriteSeries);    // Post favorites to specific profile code
+router.delete('/series/:profleCode/favorites',
+    [param('profileCode', 'El codigo del perfil no es valido').custom(validateProfileExists),
+    check('seriesCode', 'El codigo de la serie es requerido').notEmpty()],
+    removeFavoriteSeries);    // Delete a specific series from the favorites
 router.get('/series/:genre', [
     param('genre').custom(validateGenreExists),
     validateFields

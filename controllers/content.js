@@ -1,5 +1,5 @@
 import { DatabaseManager } from '../database/manager.js';
-import { getAllFavoriteMovies, getAllMoviesByGenre, getAllMovies, addNewFavoriteMovie, checkMovie, createSeries, getAllSeries, getAllSeriesByGenre } from '../models/content.js';
+import { getAllFavoriteMovies, getAllMoviesByGenre, getAllMovies, addNewFavoriteMovie, checkMovie, createSeries, getAllSeries, getAllSeriesByGenre, markFavoriteSeries, unmarkFavoriteSeries, getAllFavoriteSeries } from '../models/content.js';
 import { checkProfile } from '../models/user.js';
 
 /**
@@ -254,17 +254,72 @@ export const getSeriesByGenre = async (req, res) => {
  * @param {*} req 
  * @param {*} res 
  */
-export const addFavoriteSeries = (req, res) => {
+export const addFavoriteSeries = async (req, res) => {
     const { profleCode } = req.params;
     const { seriesCode } = req.body;
     try {
-
+        await markFavoriteSeries(seriesCode, profleCode);
+        return res.status(200).send({
+            ok: true
+        })
     } catch (error) {
         return res.status(500).send(
             {
                 ok: false,
                 errors: [
                     'No se pudo agregar la serie como favorita.'
+                ]
+            }
+        );
+    }
+}
+
+/**
+ * Remove a favorite series
+ * @param {*} req 
+ * @param {*} res 
+ */
+export const removeFavoriteSeries = async (req, res) => {
+    const { profleCode } = req.params;
+    const { seriesCode } = req.body;
+    try {
+        await unmarkFavoriteSeries(seriesCode, profleCode);
+        return res.status(200).send({
+            ok: true
+        })
+    } catch (error) {
+        return res.status(500).send(
+            {
+                ok: false,
+                errors: [
+                    'No se pudo eliminar la serie de favoritos.'
+                ]
+            }
+        );
+    }
+}
+
+
+/**
+ * Get all the favorite series
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
+export const getFavoriteSeries = async (req, res) => {
+    try {
+        const { profileCode } = req.params;
+        const series = await getAllFavoriteSeries(profileCode);
+        return res.status(200).send({
+            ok: true,
+            series
+        })
+    } catch (error) {
+        return res.status(500).send(
+            {
+                ok: false,
+                errors: [
+                    'No se pudo obtener todas las series.'
                 ]
             }
         );
