@@ -1,5 +1,5 @@
 import { DatabaseManager } from '../database/manager.js';
-import { getAllFavoriteMovies, getAllMoviesByGenre, getAllMovies, addNewFavoriteMovie, checkMovie, createSeries } from '../models/content.js';
+import { getAllFavoriteMovies, getAllMoviesByGenre, getAllMovies, addNewFavoriteMovie, checkMovie, createSeries, getAllSeries, getAllSeriesByGenre } from '../models/content.js';
 import { checkProfile } from '../models/user.js';
 
 /**
@@ -189,12 +189,60 @@ export const postSeries = async (req, res) => {
         })
 
     } catch (error) {
-        console.log(error);
         return res.status(500).send(
             {
                 ok: false,
                 errors: [
                     'Error al agregar una serie.'
+                ]
+            }
+        );
+    }
+}
+
+/**
+ * Get all series 
+ * @param {*} req 
+ * @param {*} res 
+ */
+export const getSeries = async (req, res) => {
+    try {
+        const series = await getAllSeries();
+        return res.status(200).send({
+            ok: true,
+            series
+        });
+    } catch (error) {
+        return res.status(500).send(
+            {
+                ok: false,
+                errors: [
+                    'Error al obtener series.'
+                ]
+            }
+        );
+    }
+}
+
+/**
+ * Get series by genre
+ * @param {*} req 
+ * @param {*} res 
+ */
+export const getSeriesByGenre = async (req, res) => {
+    try {
+        const { genre } = req.params;
+        const series = await getAllSeriesByGenre(genre);
+        return res.status(200).send({
+            ok: true,
+            series
+        });
+    } catch (error) {
+        return res.status(500).send(
+            {
+                ok: false,
+                errors: [
+                    'Error al obtener series.'
                 ]
             }
         );

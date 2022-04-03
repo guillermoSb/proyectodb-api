@@ -1,7 +1,10 @@
 import { Router } from 'express';
 import { check, param } from 'express-validator';
 
-import { getFavouriteMovies, getMoviesByGenre, getMovies, addFavorite, postSeries } from '../controllers/content.js';
+import {
+    getFavouriteMovies, getMoviesByGenre, getMovies, addFavorite, postSeries, getSeries,
+    getSeriesByGenre
+} from '../controllers/content.js';
 import { validateFields } from '../middlewares/request-validator.js';
 import { getAllGenres } from '../models/content.js';
 import {
@@ -27,7 +30,7 @@ router.get('movies/:genre',
     ],
     getMoviesByGenre);
 
-router.post('/:profileCode/favourites',
+router.post('movies/:profileCode/favourites',
     [
         check('profileCode', 'El código de perfil no es válido').isNumeric(),
         check('movieCode', 'El código de película no es válido').isNumeric()
@@ -35,7 +38,7 @@ router.post('/:profileCode/favourites',
     addFavorite);
 
 
-router.get('/series',);  // Get all series
+router.get('/series', getSeries);  // Get all series
 router.post('/series', [
     check('genre').custom(validateGenreExists),
     check('categories').custom(validateCategoryExists),
@@ -48,10 +51,14 @@ router.post('/series', [
     check('seasonCount').isInt({ min: 1 }),
     validateFields
 ], postSeries); // Post a series
+router.post('/series/:seriesCode/')
 router.get('/series/:profleCode/favorites');    // Get favorites for specific profile code
 router.post('/series/:profleCode/favorites');    // Post favorites to specific profile code
 router.delete('/series/:profleCode/favorites');    // Delete a specific series from the favorites
-router.get('/series/:genre');   // Get series per genre
+router.get('/series/:genre', [
+    param('genre').custom(validateGenreExists),
+    validateFields
+], getSeriesByGenre);   // Get series per genre
 
 
 export default router;

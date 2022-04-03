@@ -118,3 +118,20 @@ export const getDirector = async (directorCode) => {
     const studio = (await DatabaseManager.knex('directors').select('*').where({ directorCode }));
     return studio;
 }
+
+/**
+ * Gets all series
+ * @returns {[]}
+ */
+export const getAllSeries = async () => {
+    return (await DatabaseManager.knex('series').select('*'));
+}
+
+
+/**
+ * Gets all series
+ * @returns {[]}
+ */
+export const getAllSeriesByGenre = async (genre) => {
+    return (await DatabaseManager.knex('series').select('*').where({ genre }));
+}
