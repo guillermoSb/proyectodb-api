@@ -46,8 +46,9 @@ export const getFavouriteMovies = async (req, res) => {
  * @param {*} res 
  */
 export const getMoviesByGenre = async (req, res) => {
-    const { genre } = req.params;
     try {
+        const { genre } = req.params;
+        console.log(genre);
         const movies = await getAllMoviesByGenre(genre);
 
         if (movies.length === 0) {
