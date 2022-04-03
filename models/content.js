@@ -180,5 +180,11 @@ export const unmarkFavoriteSeries = async (seriesCode, profileCode) => {
  * @returns {[]}
  */
 export const getAllFavoriteSeries = async (profileCode) => {
-    return (await DatabaseManager.knex('favorite_series').select('*').where({ profileCode }))
+    return (await DatabaseManager.knex('favorite_series')
+        .select('*')
+        .leftJoin('series', 'favorite_series.seriesCode', 'series.seriesCode')
+        .where({ profileCode })
+
+    )
+
 }

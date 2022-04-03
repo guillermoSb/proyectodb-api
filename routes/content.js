@@ -54,15 +54,22 @@ router.post('/series', [
     check('seasonCount').isInt({ min: 1 }),
     validateFields
 ], postSeries); // Post a series
+router.get('/series/:genre', [
+    param('genre').custom(validateGenreExists),
+    validateFields
+], getSeriesByGenre);   // Get series per genre
+
 router.get(
-    '/series/:profleCode/favorites',
+    '/series/:profileCode/favorites',
     [
-        param('profileCode', 'El codigo del perfil no es valido').custom(validateProfileExists),
+        check('profileCode', 'el codigo es requerido').custom(validateProfileExists),
+        validateFields
     ],
-    getFavoriteSeries);    // Get favorites for specific profile code
+    getFavoriteSeries
+);    // Get favorites for specific profile code
 router.post('/series/:profleCode/favorites',
     [
-        param('profileCode', 'El codigo del perfil no es valido').custom(validateProfileExists),
+        param('profileCode').custom(validateProfileExists),
         check('seriesCode', 'El codigo de la serie es requerido').notEmpty()
     ],
     addFavoriteSeries);    // Post favorites to specific profile code
@@ -70,10 +77,6 @@ router.delete('/series/:profleCode/favorites',
     [param('profileCode', 'El codigo del perfil no es valido').custom(validateProfileExists),
     check('seriesCode', 'El codigo de la serie es requerido').notEmpty()],
     removeFavoriteSeries);    // Delete a specific series from the favorites
-router.get('/series/:genre', [
-    param('genre').custom(validateGenreExists),
-    validateFields
-], getSeriesByGenre);   // Get series per genre
 
 
 export default router;

@@ -288,6 +288,7 @@ export const removeFavoriteSeries = async (req, res) => {
             ok: true
         })
     } catch (error) {
+        console.log(error);
         return res.status(500).send(
             {
                 ok: false,
@@ -315,11 +316,12 @@ export const getFavoriteSeries = async (req, res) => {
             series
         })
     } catch (error) {
+        console.log(error);
         return res.status(500).send(
             {
                 ok: false,
                 errors: [
-                    'No se pudo obtener todas las series.'
+                    'No se pudo obtener todas las series favoritas.'
                 ]
             }
         );
