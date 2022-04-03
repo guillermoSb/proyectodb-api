@@ -15,8 +15,14 @@ const router = Router();
 
 router.get('/movies', getMovies);
 
+router.get('/movies/:genre',
+    [
+        param('genre', 'El genero debe ser válido.').custom(validateGenreExists),
+        validateFields
+    ],
+    getMoviesByGenre);
 
-router.get('movies/:profileCode/favorites',
+router.get('/movies/:profileCode/favorites',
     [
         param('profileCode', 'El código de perfil debe ser un número').isNumeric(),
         param('profileCode', 'El código de perfil es requerido').custom(validateUserExists),
@@ -24,13 +30,8 @@ router.get('movies/:profileCode/favorites',
     getFavouriteMovies);
 
 
-router.get('movies/:genre',
-    [
-        param('genre', 'El genero debe ser válido.').isIn(getAllGenres)
-    ],
-    getMoviesByGenre);
 
-router.post('movies/:profileCode/favourites',
+router.post('/movies/:profileCode/favourites',
     [
         check('profileCode', 'El código de perfil no es válido').isNumeric(),
         check('movieCode', 'El código de película no es válido').isNumeric()
