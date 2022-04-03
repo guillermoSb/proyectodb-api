@@ -31,4 +31,24 @@ router.post('/:profileCode/favourites',
     ],
     addFavorite);
 
+
+router.get('/series');  // Get all series
+router.post('/series'); // Post a series
+router.get('/series/:profleCode/favorites');    // Get favorites for specific profile code
+router.post('/series/:profleCode/favorites');    // Post favorites to specific profile code
+router.get('/series/:genre');   // Get series per genre
+
+
+// GET movies/
+// GET movies/:profileCode/favorites
+// POST movies/:profileCode/favorites  -  (Agregar una pelicula favorita)
+// GET movies/:genre
+
+// GET series/
+// GET series/:profileCode/favorites
+// POST series/:profileCode/favorites  -  (Agregar una pelicula favorita)
+// GET series/:genre
+
+
+
 export default router;
