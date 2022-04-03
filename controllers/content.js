@@ -248,3 +248,25 @@ export const getSeriesByGenre = async (req, res) => {
         );
     }
 }
+
+/**
+ * Add a favorite series
+ * @param {*} req 
+ * @param {*} res 
+ */
+export const addFavoriteSeries = (req, res) => {
+    const { profleCode } = req.params;
+    const { seriesCode } = req.body;
+    try {
+
+    } catch (error) {
+        return res.status(500).send(
+            {
+                ok: false,
+                errors: [
+                    'No se pudo agregar la serie como favorita.'
+                ]
+            }
+        );
+    }
+}

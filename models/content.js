@@ -135,3 +135,50 @@ export const getAllSeries = async () => {
 export const getAllSeriesByGenre = async (genre) => {
     return (await DatabaseManager.knex('series').select('*').where({ genre }));
 }
+
+
+/**
+ * Mark a favorite series
+ * @param {number} seriesCode 
+ * @param {number} profileCode 
+ */
+export const markFavoriteSeries = async (seriesCode, profileCode) => {
+    // Check if the series is already favorite
+    const favoriteAlready = await DatabaseManager.knex('favorite_series').select('*').where({
+        seriesCode,
+        profileCode
+    });
+
+    if (favoriteAlready.length === 0) {
+        await DatabaseManager.knex('favorite_series').insert({ seriesCode, profileCode });
+    }
+}
+
+/**
+ * Unmark a favorite series
+ * @param {number} seriesCode 
+ * @param {number} profileCode 
+ */
+export const unmarkFavoriteSeries = async (seriesCode, profileCode) => {
+    // Check if the series is already favorite
+    const favoriteAlready = await DatabaseManager.knex('favorite_series').select('*').where({
+        seriesCode,
+        profileCode
+    });
+
+    if (favoriteAlready.length !== 0) {
+        await DatabaseManager.knex('favorite_series').delete().where({
+            seriesCode,
+            profileCode
+        });
+    }
+}
+
+/**
+ * Get all favorite series for a profile
+ * @param {number} profileCode 
+ * @returns {[]}
+ */
+export const getAllFavoriteSeries = async (profileCode) => {
+    return (await DatabaseManager.knex('favorite_series').select('*').where({ profileCode }))
+}
