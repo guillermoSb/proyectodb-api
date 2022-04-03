@@ -6,6 +6,7 @@ export function up(knex) {
     return knex.schema
         .createTable('episodes', (table) => {
             table.bigIncrements('episodeCode', { primaryKey: true });
+            table.string('name').notNullable();
             table.string('season').notNullable();
             table.bigint('seriesCode').notNullable().references('seriesCode').inTable('series').onDelete('SET NULL');
             table.text('description');
