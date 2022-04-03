@@ -10,10 +10,10 @@ import {
 
 const router = Router();
 
-router.get('/', getMovies);
+router.get('/movies', getMovies);
 
 
-router.get('/:profileCode/favourites',
+router.get('movies/:profileCode/favorites',
     [
         param('profileCode', 'El código de perfil debe ser un número').isNumeric(),
         param('profileCode', 'El código de perfil es requerido').custom(validateUserExists),
@@ -21,7 +21,7 @@ router.get('/:profileCode/favourites',
     getFavouriteMovies);
 
 
-router.get('/:genre/movies',
+router.get('movies/:genre',
     [
         param('genre', 'El genero debe ser válido.').isIn(getAllGenres)
     ],
