@@ -1,3 +1,4 @@
+import { getallCategories, getAllGenres, getStudio, getDirector } from '../models/content.js';
 import { checkForExistingEmail, checkForExistingUser, getUser, getUserProfiles } from '../models/user.js'
 
 /**
@@ -51,4 +52,50 @@ export const validateMaxProfiles = async (userCode) => {
         throw new Error('Se ha exedido el límite de perfiles para este plan.');
     }
 
+}
+
+
+/**
+ * Validate that the genre exists
+ * @param {string} genre 
+ */
+export const validateGenreExists = async (genre) => {
+    const genres = await getAllGenres();
+    if (!genres.includes(genre)) {
+        throw new Error('El genero enviado no es válido');
+    }
+}
+
+
+/**
+ * Validates that a category exists
+ * @param {string} category 
+ */
+export const validateCategoryExists = async (category) => {
+    const categories = await getallCategories();
+    if (!categories.includes(category)) {
+        throw new Error('La categoría enviada no es válida.');
+    }
+}
+
+/**
+ * Check if a studio exists
+ * @param {number} studioCode 
+ */
+export const validStudioCode = async (studioCode) => {
+    const studio = await getStudio(studioCode);
+    if (!studio) {
+        throw new Error('El estudio enviado no existe.')
+    }
+}
+
+/**
+ * Check if a director exists
+ * @param {number} studioCode 
+ */
+export const validDirectorCode = async (directorCode) => {
+    const director = await getDirector(directorCode);
+    if (!director) {
+        throw new Error('El director enviado no existe.')
+    }
 }
