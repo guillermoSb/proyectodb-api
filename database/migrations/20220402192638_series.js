@@ -30,4 +30,3 @@ export function down(knex) {
 };
 
 
-genre	category	studioId	directorId	title	episodeCount	publishedAt	rating	ratingCount	description	coverUrl	seasonCount
