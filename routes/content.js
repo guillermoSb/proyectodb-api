@@ -3,7 +3,7 @@ import { check, param } from 'express-validator';
 
 import {
     getFavouriteMovies, getMoviesByGenre, getMovies, addFavorite, postSeries, getSeries,
-    getSeriesByGenre
+    getSeriesByGenre,
 } from '../controllers/content.js';
 import { validateFields } from '../middlewares/request-validator.js';
 import { getAllGenres } from '../models/content.js';
@@ -30,7 +30,7 @@ router.get('movies/:genre',
     ],
     getMoviesByGenre);
 
-router.post('movies/:profileCode/favourites',
+router.post('movies/:profileCode/favorites',
     [
         check('profileCode', 'El código de perfil no es válido').isNumeric(),
         check('movieCode', 'El código de película no es válido').isNumeric()
@@ -52,7 +52,7 @@ router.post('/series', [
     validateFields
 ], postSeries); // Post a series
 router.post('/series/:seriesCode/')
-router.get('/series/:profleCode/favorites');    // Get favorites for specific profile code
+// router.get('/series/:profleCode/favorites', getFavoriteSeries);    // Get favorites for specific profile code
 router.post('/series/:profleCode/favorites');    // Post favorites to specific profile code
 router.delete('/series/:profleCode/favorites');    // Delete a specific series from the favorites
 router.get('/series/:genre', [
