@@ -30,6 +30,7 @@ router.get('/movies/:profileCode/favorites',
     [
         param('profileCode', 'El código de perfil debe ser un número').isNumeric(),
         param('profileCode', 'El código de perfil es requerido').custom(validateUserExists),
+        validateFields
     ],
     getFavouriteMovies);
 
@@ -38,7 +39,8 @@ router.get('/movies/:profileCode/favorites',
 router.post('movies/:profileCode/favorites',
     [
         check('profileCode', 'El código de perfil no es válido').isNumeric(),
-        check('movieCode', 'El código de película no es válido').isNumeric()
+        check('movieCode', 'El código de película no es válido').isNumeric(),
+        validateFields
     ],
     addFavorite
 );
