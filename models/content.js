@@ -202,3 +202,48 @@ export const getSeriesById = async (seriesCode) => {
         return series;
     } else { return null; }
 }
+
+/**
+ * @param {number} value
+ */
+ export const searchContent = async (value) => {
+
+    const dataLabels = ['title','movieCode','genre','categories as category','studios.name as studio','duration','publishedAt','description','rating','coverUrl','directors.name as directorName','directors.lastName as directorLastName']
+
+    const moviesByName = await DatabaseManager
+        .knex('movies').select(dataLabels).whereILike( 'title', '%'+value+'%')
+        .innerJoin('studios', 'movies.studioCode','studios.studioCode')
+        .innerJoin('directors', 'movies.directorCode','directors.directorCode');
+
+    const moviesByGenre = await DatabaseManager
+        .knex('movies').select(dataLabels).whereILike( 'genre', '%'+value+'%')
+        .innerJoin('directors', 'movies.directorCode','directors.directorCode')
+        .innerJoin('studios', 'movies.studioCode','studios.studioCode')
+
+    const moviesByCategory = await DatabaseManager
+        .knex('movies').select(dataLabels).whereILike( 'categories','%'+value+'%')
+        .innerJoin('directors', 'movies.directorCode','directors.directorCode')
+        .innerJoin('studios', 'movies.studioCode','studios.studioCode');
+
+    const moviesByDirector = await DatabaseManager
+        .knex('movies').select(dataLabels).innerJoin('directors', 'movies.directorCode','directors.directorCode')
+        .whereILike( 'directors.name', '%'+value+'%').orWhereILike( 'lastName', '%'+value+'%')
+        .innerJoin('studios', 'movies.studioCode','studios.studioCode');
+    
+    const moviesByStudio = await DatabaseManager
+        .knex('movies').select(dataLabels).innerJoin('studios', 'movies.studioCode','studios.studioCode')
+        .whereILike( 'studios.name', '%'+value+'%').innerJoin('directors', 'movies.directorCode','directors.directorCode');
+
+    const movies = moviesByName.concat(moviesByGenre,moviesByCategory,moviesByDirector,moviesByStudio);
+
+    const cleanData = movies.filter((value, index) => {
+        const _value = JSON.stringify(value);
+        return index === movies.findIndex(obj => {
+          return JSON.stringify(obj) === _value;
+        });
+      });
+
+    console.log(cleanData);
+
+
+}

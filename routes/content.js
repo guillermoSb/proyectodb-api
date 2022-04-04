@@ -8,6 +8,7 @@ import {
     addFavoriteSeries,
     removeFavoriteSeries,
     getSeriesByCode,
+    getMoviesBySearch,
 } from '../controllers/content.js';
 import { validateFields } from '../middlewares/request-validator.js';
 //import { getAllGenres } from '../models/content.js';
@@ -88,6 +89,12 @@ router.delete('/series/:profleCode/favorites',
     [param('profileCode', 'El codigo del perfil no es valido').custom(validateProfileExists),
     check('seriesCode', 'El codigo de la serie es requerido').notEmpty()],
     removeFavoriteSeries);    // Delete a specific series from the favorites
+
+router.get('/movies/:value/search',
+    [
+        check('value', 'El valor es requerido').notEmpty(),
+        validateFields
+    ],getMoviesBySearch);
 
 
 

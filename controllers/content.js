@@ -1,5 +1,5 @@
 import { DatabaseManager } from '../database/manager.js';
-import { getAllFavoriteMovies, getAllMoviesByGenre, getAllMovies, addNewFavoriteMovie, checkMovie, createSeries, getAllSeries, getAllSeriesByGenre, markFavoriteSeries, unmarkFavoriteSeries, getAllFavoriteSeries, getSeriesById } from '../models/content.js';
+import { getAllFavoriteMovies, getAllMoviesByGenre, getAllMovies, addNewFavoriteMovie, checkMovie, createSeries, getAllSeries, getAllSeriesByGenre, markFavoriteSeries, unmarkFavoriteSeries, getAllFavoriteSeries, getSeriesById, searchContent } from '../models/content.js';
 import { checkProfile } from '../models/user.js';
 
 /**
@@ -359,6 +359,33 @@ export const getFavoriteSeries = async (req, res) => {
                 ok: false,
                 errors: [
                     'No se pudo obtener todas las series favoritas.'
+                ]
+            }
+        );
+    }
+}
+
+
+/**
+ * Get all the favorite series
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
+ export const getMoviesBySearch = async (req, res) => {
+    try {
+        const { value } = req.params;
+        await searchContent(value)
+        return res.status(200).send({
+            ok: true
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send(
+            {
+                ok: false,
+                errors: [
+                    'No se pudo hacer la búsqueda.'
                 ]
             }
         );
