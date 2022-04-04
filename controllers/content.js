@@ -211,9 +211,29 @@ export const postSeries = async (req, res) => {
 export const getSeries = async (req, res) => {
     try {
         const series = await getAllSeries();
+        const seriesByGenre = {};
+        for (const serie of series) {
+            if (!seriesByGenre[serie.genre]) {
+                seriesByGenre[serie.genre] = [{
+                    title: serie.title,
+                    categories: serie.categories,
+                    publishedAt: serie.publishedAt,
+                    rating: serie.rating,
+                    coverUrl: serie.coverUrl
+                }];
+            } else {
+                seriesByGenre[serie.genre].push({
+                    title: serie.title,
+                    categories: serie.categories,
+                    publishedAt: serie.publishedAt,
+                    rating: serie.rating,
+                    coverUrl: serie.coverUrl
+                });
+            }
+        }
         return res.status(200).send({
             ok: true,
-            series
+            series: seriesByGenre
         });
     } catch (error) {
         return res.status(500).send(
