@@ -375,9 +375,10 @@ export const getFavoriteSeries = async (req, res) => {
  export const getMoviesBySearch = async (req, res) => {
     try {
         const { value } = req.params;
-        await searchContent(value)
+        const content = await searchContent(value)
         return res.status(200).send({
-            ok: true
+            ok: true,
+            content,
         })
     } catch (error) {
         console.log(error);
