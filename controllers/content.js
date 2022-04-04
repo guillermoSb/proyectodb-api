@@ -123,7 +123,8 @@ export const getMovies = async (req, res) => {
  * @param {*} res 
  */
 export const addFavorite = async (req, res) => {
-    const { profileCode, movieCode } = req.body;
+    const { profileCode } = req.params;
+    const { movieCode } = req.body;
 
     try {
 
@@ -160,6 +161,7 @@ export const addFavorite = async (req, res) => {
         });
 
     } catch (error) {
+        console.log(error);
         return res.status(500).send(
             {
                 ok: false,
