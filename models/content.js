@@ -197,8 +197,8 @@ export const getSeriesById = async (seriesCode) => {
         .knex('series').select('*').where({ seriesCode });
 
     if (series.length !== 0) {
-        const episodes = await DatabaseManager.knex('episodes').select('name', 'season', 'datePublished').where({ seriesCode });
+        const episodes = await DatabaseManager.knex('episodes').select('name', 'season', 'datePublished', 'url').where({ seriesCode });
         series[0]['episodes'] = episodes;
-        return series;
+        return series[0];
     } else { return null; }
 }

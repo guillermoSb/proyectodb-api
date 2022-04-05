@@ -95,6 +95,7 @@ export const getMovies = async (req, res) => {
                 moviesByGenre[movie.genre] = [{
                     movieCode: movie.movieCode,
                     title: movie.title,
+                    genre: movie.genre,
                     categories: movie.categories,
                     publishedAt: movie.publishedAt,
                     rating: movie.rating,
@@ -104,6 +105,7 @@ export const getMovies = async (req, res) => {
                 moviesByGenre[movie.genre].push({
                     movieCode: movie.movieCode,
                     title: movie.title,
+                    genre: movie.genre,
                     categories: movie.categories,
                     publishedAt: movie.publishedAt,
                     rating: movie.rating,
@@ -242,6 +244,7 @@ export const getSeries = async (req, res) => {
                     categories: serie.categories,
                     publishedAt: serie.publishedAt,
                     rating: serie.rating,
+                    genre: series.genre,
                     coverUrl: serie.coverUrl,
                 }];
             } else {
@@ -251,6 +254,7 @@ export const getSeries = async (req, res) => {
                     categories: serie.categories,
                     publishedAt: serie.publishedAt,
                     rating: serie.rating,
+                    genre: series.genre,
                     coverUrl: serie.coverUrl,
                 });
             }
