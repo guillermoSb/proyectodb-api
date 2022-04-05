@@ -89,6 +89,28 @@ export const getMovies = async (req, res) => {
     try {
         const movies = await getAllMovies();
 
+        const moviesByGenre = {};
+        for (const movie of movies) {
+            if (!moviesByGenre[movie.genre]) {
+                moviesByGenre[movie.genre] = [{
+                    movieCode: movie.movieCode,
+                    title: movie.title,
+                    categories: movie.categories,
+                    publishedAt: movie.publishedAt,
+                    rating: movie.rating,
+                    coverUrl: movie.coverUrl,
+                }];
+            } else {
+                moviesByGenre[movie.genre].push({
+                    movieCode: movie.movieCode,
+                    title: movie.title,
+                    categories: movie.categories,
+                    publishedAt: movie.publishedAt,
+                    rating: movie.rating,
+                    coverUrl: movie.coverUrl,
+                });
+            }
+        }
         if (movies.length === 0) {
             res.status(200).send({
                 ok: false,
@@ -100,7 +122,7 @@ export const getMovies = async (req, res) => {
 
             res.status(200).send({
                 ok: true,
-                movies
+                movies: moviesByGenre
             });
 
         }
@@ -215,19 +237,21 @@ export const getSeries = async (req, res) => {
         for (const serie of series) {
             if (!seriesByGenre[serie.genre]) {
                 seriesByGenre[serie.genre] = [{
+                    seriesCode: serie.seriesCode,
                     title: serie.title,
                     categories: serie.categories,
                     publishedAt: serie.publishedAt,
                     rating: serie.rating,
-                    coverUrl: serie.coverUrl
+                    coverUrl: serie.coverUrl,
                 }];
             } else {
                 seriesByGenre[serie.genre].push({
+                    seriesCode: serie.seriesCode,
                     title: serie.title,
                     categories: serie.categories,
                     publishedAt: serie.publishedAt,
                     rating: serie.rating,
-                    coverUrl: serie.coverUrl
+                    coverUrl: serie.coverUrl,
                 });
             }
         }
@@ -322,6 +346,7 @@ export const addFavoriteSeries = async (req, res) => {
             ok: true
         })
     } catch (error) {
+        console.log(error);
         return res.status(500).send(
             {
                 ok: false,
