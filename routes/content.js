@@ -8,7 +8,8 @@ import {
     addFavoriteSeries,
     removeFavoriteSeries,
     getSeriesByCode,
-    removeFavoriteMovie
+    removeFavoriteMovie,
+    getMovieByCode
 } from '../controllers/content.js';
 import { validateFields } from '../middlewares/request-validator.js';
 //import { getAllGenres } from '../models/content.js';
@@ -74,6 +75,12 @@ router.get('/series/single/:seriesCode', [
     check('seriesCode', 'El código de la serie es requerido.').notEmpty().isNumeric(),
     validateFields
 ], getSeriesByCode);
+
+
+router.get('/movies/single/:movieCode', [
+    check('movieCode', 'El código de la pelicula es requerido.').notEmpty().isNumeric(),
+    validateFields
+], getMovieByCode);
 
 router.get(
     '/series/:profileCode/favorites',

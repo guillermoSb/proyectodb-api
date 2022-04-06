@@ -1,5 +1,5 @@
 import { DatabaseManager } from '../database/manager.js';
-import { getAllFavoriteMovies, getAllMoviesByGenre, getAllMovies, addNewFavoriteMovie, checkMovie, createSeries, getAllSeries, getAllSeriesByGenre, markFavoriteSeries, unmarkFavoriteSeries, getAllFavoriteSeries, getSeriesById, unmarkFavoriteMovie } from '../models/content.js';
+import { getAllFavoriteMovies, getAllMoviesByGenre, getAllMovies, addNewFavoriteMovie, checkMovie, createSeries, getAllSeries, getAllSeriesByGenre, markFavoriteSeries, unmarkFavoriteSeries, getAllFavoriteSeries, getSeriesById, unmarkFavoriteMovie, getMovieById } from '../models/content.js';
 import { checkProfile } from '../models/user.js';
 
 /**
@@ -315,6 +315,43 @@ export const getSeriesByCode = async (req, res) => {
                 ok: false,
                 errors: [
                     'Error al obtener serie.'
+                ]
+            }
+        );
+    }
+}
+
+
+/**
+ * Get series by code
+ * @param {*} req 
+ * @param {*} res 
+ */
+export const getMovieByCode = async (req, res) => {
+    try {
+        const { movieCode } = req.params;
+
+        const movie = await getMovieById(movieCode);
+        if (movie) {
+            return res.status(200).send({
+                ok: true,
+                movie
+            })
+        } else {
+            return res.status(400).send({
+                ok: false,
+                errors: [
+                    'No existe esa pelicula'
+                ]
+            })
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send(
+            {
+                ok: false,
+                errors: [
+                    'Error al obtener pelicula.'
                 ]
             }
         );

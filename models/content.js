@@ -230,3 +230,21 @@ export const getSeriesById = async (seriesCode) => {
         return series[0];
     } else { return null; }
 }
+
+
+/**
+ * Get a movie by code
+ * @param {number} movieCode 
+ */
+export const getMovieById = async (movieCode) => {
+    const movie = await DatabaseManager
+        .knex('movies').select('*').where({ movieCode });
+
+    if (movie.length !== 0) {
+        const studio = await DatabaseManager.knex('studios').select('name').where({
+            studioCode: movie[0].studioCode
+        });
+        movie[0]['studio'] = studio[0];
+        return movie[0];
+    } else { return null; }
+}
