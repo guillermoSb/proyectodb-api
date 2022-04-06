@@ -1,7 +1,7 @@
 // Library Imports
 import { Router } from 'express';
 // Project Imports
-import { postUser, getUsers, getProfilesByUserId, postProfileByUserId } from '../controllers/user.js';
+import { postUser, getUsers, getProfilesByUserId, postProfileByUserId, getUserById } from '../controllers/user.js';
 import { check, param } from 'express-validator';
 import { validateFields } from '../middlewares/request-validator.js';
 import { validarJWT } from '../middlewares/validar-jwt.js';
@@ -9,7 +9,7 @@ import { validateEmailUnique, validateUserUnique, validateUserExists, validateMa
 
 const router = Router();    // Create the router
 
-router.get('/', [validarJWT],getUsers);  // Retreive a list of all users
+router.get('/', [validarJWT], getUsers);  // Retreive a list of all users
 router.post(
     '/',
     [
@@ -26,8 +26,15 @@ router.post(
     ],
     postUser
 );    // Create an user
+
+router.get('/:userCode', [
+    param('userCode', 'El userCode debe ser un numero').isNumeric(),
+    param('userCode').custom(validateUserExists),
+    validateFields,
+    // validarJWT
+], getUserById)
 router.get(
-    '/:userCode/profiles', [validarJWT] ,[
+    '/:userCode/profiles', [validarJWT], [
     param('userCode', 'El userCode debe ser un numero').isNumeric(),
     param('userCode').custom(validateUserExists),
     validateFields
@@ -35,7 +42,7 @@ router.get(
     getProfilesByUserId)    // Get user profiles
 
 router.post(
-    '/:userCode/profiles', [validarJWT] , [
+    '/:userCode/profiles', [validarJWT], [
     param('userCode', 'El userCode debe ser un numero').isNumeric(),
     param('userCode').custom(validateUserExists),
     param('userCode').custom(validateMaxProfiles),

@@ -37,7 +37,7 @@ export const getUser = async (userCode) => {
     delete users[0].password
 
 
-    const { userCode: code, user, email, name, lastName, active, plan, profileCount } = users[0];
+    const { userCode: code, user, email, name, lastName, active, plan, profileCount, adFrequency } = users[0];
 
     const userObject = {
         userCode: code,
@@ -48,7 +48,8 @@ export const getUser = async (userCode) => {
         active,
         plan: {
             plan,
-            profileCount
+            profileCount,
+            adFrequency
         }
     }
 
@@ -107,7 +108,7 @@ export const authUser = async (email, password) => {
  * @param {string} userCode 
  * @returns user
  */
- export const authUserWithToken = async (userCode) => {
+export const authUserWithToken = async (userCode) => {
     const user = await DatabaseManager.knex('users').select('*').where({ userCode });    // Get the user
     if (user.length != 1) return null; // Check for user not found
     delete user[0].password;
