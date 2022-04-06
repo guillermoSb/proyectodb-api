@@ -48,8 +48,14 @@ export const getAllGenres = async () => {
  */
 
 export const addNewFavoriteMovie = async (profileCode, movieCode, transaction) => {
+    const favoriteAlready = await DatabaseManager.knex('favorites_movies').select('*').where({
+        movieCode,
+        profileCode
+    });
 
-    await transaction('favorites_movies').insert({ profileCode, movieCode }, ['*']);
+    if (favoriteAlready.length === 0) {
+        await transaction('favorites_movies').insert({ profileCode, movieCode }, ['*']);
+    }
 
 }
 
@@ -171,6 +177,24 @@ export const unmarkFavoriteSeries = async (seriesCode, profileCode) => {
             seriesCode,
             profileCode
         });
+    }
+}
+
+/**
+ * Unmark a movie from the favorites
+ * @param {number} movieCode 
+ * @param {number} profileCode 
+ */
+export const unmarkFavoriteMovie = async (movieCode, profileCode) => {
+    const favoriteAlready = await DatabaseManager.knex('favorites_movies').select('*').where({
+        profileCode,
+        movieCode
+    });
+    if (favoriteAlready.length !== 0) {
+        await DatabaseManager.knex('favorites_movies').delete().where({
+            profileCode,
+            movieCode
+        })
     }
 }
 

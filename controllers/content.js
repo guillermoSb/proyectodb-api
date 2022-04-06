@@ -1,5 +1,5 @@
 import { DatabaseManager } from '../database/manager.js';
-import { getAllFavoriteMovies, getAllMoviesByGenre, getAllMovies, addNewFavoriteMovie, checkMovie, createSeries, getAllSeries, getAllSeriesByGenre, markFavoriteSeries, unmarkFavoriteSeries, getAllFavoriteSeries, getSeriesById } from '../models/content.js';
+import { getAllFavoriteMovies, getAllMoviesByGenre, getAllMovies, addNewFavoriteMovie, checkMovie, createSeries, getAllSeries, getAllSeriesByGenre, markFavoriteSeries, unmarkFavoriteSeries, getAllFavoriteSeries, getSeriesById, unmarkFavoriteMovie } from '../models/content.js';
 import { checkProfile } from '../models/user.js';
 
 /**
@@ -11,29 +11,42 @@ export const getFavouriteMovies = async (req, res) => {
     const { profileCode } = req.params;
     try {
         const movies = await getAllFavoriteMovies(profileCode);
-
-        if (movies.length === 0) {
-            res.status(200).send({
-                ok: false,
-                errors: [
-                    'Este perfil no tiene películas favoritas'
-                ]
-            });
-        } else {
-
-            res.status(200).send({
-                ok: true,
-                movies
-            });
-
-        }
-
+        res.status(200).send({
+            ok: true,
+            movies
+        });
     } catch (error) {
         return res.status(500).send(
             {
                 ok: false,
                 errors: [
                     'Error al obtener películas.'
+                ]
+            }
+        );
+    }
+}
+
+/**
+ * Remove a favorite movie
+ * @param {*} req 
+ * @param {*} res 
+ */
+export const removeFavoriteMovie = async (req, res) => {
+    const { profileCode } = req.params;
+    const { movieCode } = req.body;
+    try {
+        await unmarkFavoriteMovie(movieCode, profileCode);
+        return res.status(200).send({
+            ok: true
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send(
+            {
+                ok: false,
+                errors: [
+                    'No se pudo eliminar la pelicula de favoritos.'
                 ]
             }
         );
@@ -152,7 +165,7 @@ export const addFavorite = async (req, res) => {
 
     try {
 
-        if (checkProfile(profileCode) < 1) {
+        if (checkProfile(profileCode).length < 1) {
             return res.status(500).send(
                 {
                     ok: false,
@@ -161,7 +174,7 @@ export const addFavorite = async (req, res) => {
                     ]
                 }
             );
-        } else if (checkMovie(movieCode) < 1) {
+        } else if (checkMovie(movieCode).length < 1) {
             return res.status(500).send(
                 {
                     ok: false,
@@ -173,10 +186,7 @@ export const addFavorite = async (req, res) => {
         }
 
         await DatabaseManager.knex.transaction(async transaction => {
-
-
             await addNewFavoriteMovie(profileCode, movieCode, transaction);
-
             return res.status(201).send(
                 {
                     ok: true
