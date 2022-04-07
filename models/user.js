@@ -168,3 +168,9 @@ export const checkProfile = async (profileCode) => {
     const profiles = await DatabaseManager.knex('profiles').select('*').where({ profileCode });
     return profiles;
 }
+
+
+export const updateLockState = async (profileCode, locked) => {
+    const updated = await DatabaseManager.knex('profiles').update({ signedIn: locked }).where({ profileCode });
+    return updated;
+}
