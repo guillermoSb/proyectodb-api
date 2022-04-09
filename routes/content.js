@@ -11,7 +11,9 @@ import {
     removeFavoriteMovie,
     getMovieByCode,
     markMovieAsFinished,
-    getFinishedMovies
+    getFinishedMovies,
+    markEpisodeAsFinished,
+    getFinishedSeries
 } from '../controllers/content.js';
 import { validateFields } from '../middlewares/request-validator.js';
 //import { getAllGenres } from '../models/content.js';
@@ -114,6 +116,17 @@ router.get('/movies/:profileCode/finished', [
     check('profileCode').custom(validateProfileExists),
     validateFields
 ], getFinishedMovies);
+
+router.post('/series/:profileCode/finished', [
+    check('profileCode').custom(validateProfileExists),
+    check('episodeCode', 'El codigo del episodio no debe estar vacio.').notEmpty(),
+    validateFields
+], markEpisodeAsFinished);
+
+router.get('/series/:profileCode/finished', [
+    check('profileCode').custom(validateProfileExists),
+    validateFields
+], getFinishedSeries);
 
 
 

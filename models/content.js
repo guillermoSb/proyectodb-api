@@ -277,3 +277,54 @@ export const fetchFinishedMovies = async (profileCode) => {
     // 2. Return the results
     return activity;
 }
+
+
+/**
+ * Create a episode finished activity
+ * @param {number} episodeCode 
+ * @param {number} profileCode 
+ * @returns 
+ */
+export const createEpisodeFinishedActivity = async (episodeCode, profileCode) => {
+    const activity = await DatabaseManager.knex('userSeriesActivities').insert({
+        episodeCode,
+        profileCode,
+        finished: true
+    }, '*');
+    return activity;
+}
+
+/**
+ * Fetch the finished series from the database
+ */
+export const fetchFinishedSeries = async (profileCode) => {
+    // query 1 -> select all the episodes for that profileCode
+    const query1 = DatabaseManager.knex('userSeriesActivities').select('episodeCode').where({
+        profileCode,
+        finished: true
+    });
+    // query 2 -> obtain the series info
+    const query2 = await DatabaseManager.knex('episodes').select('seriesCode').count()
+        .whereIn('episodes.episodeCode', query1)
+        .groupBy('seriesCode')
+
+    let returnArray = [];
+
+    for (const series of query2) {
+        const totalCount = await DatabaseManager.knex('episodes').count().where({
+            seriesCode: series.seriesCode
+        });
+        if (totalCount[0].count === series.count) {
+
+            const seriesData = await DatabaseManager.knex('series').select('*').where({
+                seriesCode: series.seriesCode
+            });
+            returnArray = returnArray.concat(seriesData);
+
+        }
+    }
+
+    const result = returnArray;
+    return result;
+
+}

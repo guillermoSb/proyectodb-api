@@ -1,5 +1,5 @@
 import { DatabaseManager } from '../database/manager.js';
-import { getAllFavoriteMovies, getAllMoviesByGenre, getAllMovies, addNewFavoriteMovie, checkMovie, createSeries, getAllSeries, getAllSeriesByGenre, markFavoriteSeries, unmarkFavoriteSeries, getAllFavoriteSeries, getSeriesById, unmarkFavoriteMovie, getMovieById, createMovieFinishedActivity, fetchFinishedMovies } from '../models/content.js';
+import { getAllFavoriteMovies, getAllMoviesByGenre, getAllMovies, addNewFavoriteMovie, checkMovie, createSeries, getAllSeries, getAllSeriesByGenre, markFavoriteSeries, unmarkFavoriteSeries, getAllFavoriteSeries, getSeriesById, unmarkFavoriteMovie, getMovieById, createMovieFinishedActivity, fetchFinishedMovies, createEpisodeFinishedActivity, fetchFinishedSeries } from '../models/content.js';
 import { checkProfile } from '../models/user.js';
 
 /**
@@ -510,5 +510,55 @@ export const getFinishedMovies = async (req, res) => {
                 ]
             }
         );
+    }
+}
+
+/**
+ * Mark an episode as finished
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
+export const markEpisodeAsFinished = async (req, res) => {
+    try {
+        const { profileCode } = req.params;
+        const { episodeCode } = req.body;
+        await createEpisodeFinishedActivity(episodeCode, profileCode);
+        return res.status(200).send({
+            ok: true
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({
+            ok: false,
+            errors: [
+                'No se pudo marcar el episodio como terminado.'
+            ]
+        })
+    }
+}
+
+/**
+ * Mark a series as finished
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
+export const getFinishedSeries = async (req, res) => {
+    try {
+        const { profileCode } = req.params;
+        const series = await fetchFinishedSeries(profileCode);
+        return res.status(200).send({
+            ok: true,
+            series
+        })
+    } catch (error) {
+
+        return res.status(500).send({
+            ok: false,
+            errors: [
+                'Error al obtener series terminadas.'
+            ]
+        })
     }
 }
