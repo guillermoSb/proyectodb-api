@@ -248,3 +248,32 @@ export const getMovieById = async (movieCode) => {
         return movie[0];
     } else { return null; }
 }
+
+/**
+ * Create a movie finished activity
+ * @param {number} movieCode 
+ * @param {number} profileCode 
+ * @returns 
+ */
+export const createMovieFinishedActivity = async (movieCode, profileCode) => {
+    const activity = await DatabaseManager.knex('userMovieActivities').insert({
+        movieCode,
+        profileCode,
+        finished: true
+    }, '*');
+    return activity;
+}
+
+/**
+ * Fetch the finished movies from the database
+ */
+export const fetchFinishedMovies = async (profileCode) => {
+    // 1. Fetch the finished movies for that profile
+    const activity = await DatabaseManager.knex('userMovieActivities').distinct().where({
+        profileCode,
+        finished: true
+    }).leftJoin('movies', 'userMovieActivities.movieCode', 'movies.movieCode');
+
+    // 2. Return the results
+    return activity;
+}

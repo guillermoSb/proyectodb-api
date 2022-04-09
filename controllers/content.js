@@ -1,5 +1,5 @@
 import { DatabaseManager } from '../database/manager.js';
-import { getAllFavoriteMovies, getAllMoviesByGenre, getAllMovies, addNewFavoriteMovie, checkMovie, createSeries, getAllSeries, getAllSeriesByGenre, markFavoriteSeries, unmarkFavoriteSeries, getAllFavoriteSeries, getSeriesById, unmarkFavoriteMovie, getMovieById } from '../models/content.js';
+import { getAllFavoriteMovies, getAllMoviesByGenre, getAllMovies, addNewFavoriteMovie, checkMovie, createSeries, getAllSeries, getAllSeriesByGenre, markFavoriteSeries, unmarkFavoriteSeries, getAllFavoriteSeries, getSeriesById, unmarkFavoriteMovie, getMovieById, createMovieFinishedActivity, fetchFinishedMovies } from '../models/content.js';
 import { checkProfile } from '../models/user.js';
 
 /**
@@ -41,7 +41,7 @@ export const removeFavoriteMovie = async (req, res) => {
             ok: true
         })
     } catch (error) {
-        console.log(error);
+
         return res.status(500).send(
             {
                 ok: false,
@@ -195,7 +195,7 @@ export const addFavorite = async (req, res) => {
         });
 
     } catch (error) {
-        console.log(error);
+
         return res.status(500).send(
             {
                 ok: false,
@@ -309,7 +309,7 @@ export const getSeriesByCode = async (req, res) => {
             })
         }
     } catch (error) {
-        console.log(error);
+
         return res.status(500).send(
             {
                 ok: false,
@@ -346,7 +346,7 @@ export const getMovieByCode = async (req, res) => {
             })
         }
     } catch (error) {
-        console.log(error);
+
         return res.status(500).send(
             {
                 ok: false,
@@ -397,7 +397,7 @@ export const addFavoriteSeries = async (req, res) => {
             ok: true
         })
     } catch (error) {
-        console.log(error);
+
         return res.status(500).send(
             {
                 ok: false,
@@ -423,7 +423,7 @@ export const removeFavoriteSeries = async (req, res) => {
             ok: true
         })
     } catch (error) {
-        console.log(error);
+
         return res.status(500).send(
             {
                 ok: false,
@@ -451,12 +451,62 @@ export const getFavoriteSeries = async (req, res) => {
             series
         })
     } catch (error) {
-        console.log(error);
+
         return res.status(500).send(
             {
                 ok: false,
                 errors: [
                     'No se pudo obtener todas las series favoritas.'
+                ]
+            }
+        );
+    }
+}
+
+/**
+ * Mark a movie as finished
+ * @param {*} req 
+ * @param {*} res 
+ */
+export const markMovieAsFinished = async (req, res) => {
+    try {
+        const { profileCode } = req.params;
+        const { movieCode } = req.body;
+        const newActivity = await createMovieFinishedActivity(movieCode, profileCode);
+        return res.status(200).send({
+            ok: true
+        })
+    } catch (error) {
+        return res.status(500).send(
+            {
+                ok: false,
+                errors: [
+                    'No se pudo marcar la pelicula como terminada.'
+                ]
+            }
+        );
+    }
+}
+
+/**
+ * Get the finished movies for a profile
+ * @param {*} req 
+ * @param {*} res 
+ */
+export const getFinishedMovies = async (req, res) => {
+    try {
+        const { profileCode } = req.params;
+        const movies = await fetchFinishedMovies(profileCode);
+        return res.status(200).send({
+            ok: true,
+            movies
+        })
+    } catch (error) {
+        return res.status(500).send(
+            {
+                ok: false,
+                errors: [
+                    'No se pudo obtener las peliculas terminadas.'
                 ]
             }
         );

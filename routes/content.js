@@ -9,7 +9,9 @@ import {
     removeFavoriteSeries,
     getSeriesByCode,
     removeFavoriteMovie,
-    getMovieByCode
+    getMovieByCode,
+    markMovieAsFinished,
+    getFinishedMovies
 } from '../controllers/content.js';
 import { validateFields } from '../middlewares/request-validator.js';
 //import { getAllGenres } from '../models/content.js';
@@ -102,6 +104,16 @@ router.delete('/series/:profleCode/favorites',
     check('seriesCode', 'El codigo de la serie es requerido').notEmpty()],
     removeFavoriteSeries);    // Delete a specific series from the favorites
 
+router.post('/movies/:profileCode/finished', [
+    check('profileCode').custom(validateProfileExists),
+    check('movieCode', 'El codigo de la pelicula no debe estar vacío.').notEmpty(),
+    validateFields
+], markMovieAsFinished);
+
+router.get('/movies/:profileCode/finished', [
+    check('profileCode').custom(validateProfileExists),
+    validateFields
+], getFinishedMovies);
 
 
 
