@@ -1,5 +1,5 @@
 import { DatabaseManager } from '../database/manager.js';
-import { createProfile, createUser, getAllUsers, getUser, getUserProfiles, toggleActivationProfile, updateLockState } from '../models/user.js';
+import { createProfile, createUser, downgradeUser, getAllUsers, getUser, getUserProfiles, toggleActivationProfile, updateLockState } from '../models/user.js';
 
 
 /**
@@ -230,6 +230,45 @@ export const toggleActivateProfile = async (req,res) => {
                 ok: false,
                 errors: [
                     'Error al modificar el perfil.'
+                ]
+            }
+        );
+    }
+}
+
+/**
+ * Unlocks a profile session
+ * @param {*} req 
+ * @param {*} res 
+ */
+export const downgrade = async (req,res) => {
+    const {userCode} = req.params;
+
+    try {
+
+        const user = await downgradeUser(userCode);
+
+        if (user) {
+            return res.status(200).send({
+                ok: true
+            });
+        } else {
+            return res.status(500).send(
+                {
+                    ok: false,
+                    errors: [
+                        'Este usuario ya tiene el plan mas basico.'
+                    ]
+                }
+            );
+        }
+        
+    } catch (error) {
+        return res.status(500).send(
+            {
+                ok: false,
+                errors: [
+                    'Error al modificar el usuario.'
                 ]
             }
         );

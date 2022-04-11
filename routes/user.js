@@ -1,7 +1,7 @@
 // Library Imports
 import { Router } from 'express';
 // Project Imports
-import { postUser, getUsers, getProfilesByUserId, postProfileByUserId, getUserById, lockProfile, unlockProfile, toggleActivateProfile } from '../controllers/user.js';
+import { postUser, getUsers, getProfilesByUserId, postProfileByUserId, getUserById, lockProfile, unlockProfile, toggleActivateProfile, downgrade } from '../controllers/user.js';
 import { check, param } from 'express-validator';
 import { validateFields } from '../middlewares/request-validator.js';
 import { validarJWT } from '../middlewares/validar-jwt.js';
@@ -82,11 +82,11 @@ router.post(
 
 
 router.post(
-    '/toggle/activation/:profileCode', [
-        check('profileCode', 'El profileCode es requerido').isNumeric(),
+    '/downgrade/:userCode', [
+        check('userCode', 'El userCode es requerido').isNumeric(),
         validateFields
     ],
-    toggleActivateProfile
+    downgrade
 );
 
 
