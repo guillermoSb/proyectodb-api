@@ -49,9 +49,45 @@ export const getAllGenres = async () => {
 
 export const addNewFavoriteMovie = async (profileCode, movieCode, transaction) => {
 
-    await transaction('favorites_movies').insert({ profileCode, movieCode }, ['*']);
+    const favoriteAlready = await DatabaseManager.knex('favorite_movies').select('*').where({
+        movieCode,
+        profileCode
+    });
+
+    if (favoriteAlready.length === 0) {
+        await transaction('favorites_movies').insert({ profileCode, movieCode }, ['*']);
+    }
 
 }
+
+export const deleteFavoriteMovie = async (movieCode, profileCode) => {
+    // Check if the series is already favorite
+    const favoriteAlready = await DatabaseManager.knex('favorite_movies').select('*').where({
+        movieCode,
+        profileCode
+    });
+
+    if (favoriteAlready.length !== 0) {
+        await DatabaseManager.knex('favorite_movie').delete().where({
+            movieCode,
+            profileCode
+        });
+    }
+}
+
+/**
+ * Get series by code
+ * @param {number} movieCode
+ */
+ export const getMovieById = async (movieCode) => {
+    const movies = await DatabaseManager
+        .knex('movies').select('title','movieCode','genre','categories as category','studios.name as studio','duration','publishedAt','description','rating','coverUrl','directors.name as directorName','directors.lastName as directorLastName').where({ movieCode })
+        .innerJoin('studios', 'movies.studioCode','studios.studioCode')
+        .innerJoin('directors', 'movies.directorCode','directors.directorCode');
+        
+    return movies;
+}
+
 
 
 /**
@@ -194,7 +230,10 @@ export const getAllFavoriteSeries = async (profileCode) => {
  */
 export const getSeriesById = async (seriesCode) => {
     const series = await DatabaseManager
-        .knex('series').select('*').where({ seriesCode });
+        .knex('series').select('*').where({ seriesCode })
+        .innerJoin('studios', 'series.studioCode','studios.studioCode')
+        .innerJoin('directors', 'series.directorCode','directors.directorCode');
+        
 
     if (series.length !== 0) {
         const episodes = await DatabaseManager.knex('episodes').select('name', 'season', 'datePublished').where({ seriesCode });
@@ -233,10 +272,10 @@ const searchMovies = async (value,dataLabels) => {
         .knex('movies').select(dataLabels).innerJoin('studios', 'movies.studioCode','studios.studioCode')
         .whereILike( 'studios.name', '%'+value+'%').innerJoin('directors', 'movies.directorCode','directors.directorCode');
 
-    const moviesByDate = await DatabaseManager
+    /* const moviesByDate = await DatabaseManager
     .knex('movies').select(dataLabels).innerJoin('studios', 'movies.studioCode','studios.studioCode')
     .whereILike( 'publishedAt', '%'+value+'%').innerJoin('directors', 'movies.directorCode','directors.directorCode');
-
+ */
     const movies = moviesByName.concat(moviesByGenre,moviesByCategory,moviesByDirector,moviesByStudio,moviesByDate);
 
     const cleanData = movies.filter((value, index) => {
@@ -280,10 +319,10 @@ const searchSeries = async (value,dataLabels) => {
         .knex('series').select(dataLabels).innerJoin('studios', 'series.studioCode','studios.studioCode')
         .whereILike( 'studios.name', '%'+value+'%').innerJoin('directors', 'series.directorCode','directors.directorCode');
 
-    const seriesByDate = await DatabaseManager
+    /* const seriesByDate = await DatabaseManager
     .knex('series').select(dataLabels).innerJoin('studios', 'series.studioCode','studios.studioCode')
     .whereILike( 'publishedAt', '%'+value+'%').innerJoin('directors', 'series.directorCode','directors.directorCode');
-
+ */
     const series = seiresByName.concat(seriesByGenre,seriesByCategory,seriesByDirector,seriessByStudio,seriesByDate);
 
     const cleanData = series.filter((value, index) => {

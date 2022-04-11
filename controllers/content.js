@@ -1,5 +1,5 @@
 import { DatabaseManager } from '../database/manager.js';
-import { getAllFavoriteMovies, getAllMoviesByGenre, getAllMovies, addNewFavoriteMovie, checkMovie, createSeries, getAllSeries, getAllSeriesByGenre, markFavoriteSeries, unmarkFavoriteSeries, getAllFavoriteSeries, getSeriesById, searchContent } from '../models/content.js';
+import { getAllFavoriteMovies, getAllMoviesByGenre, getAllMovies, addNewFavoriteMovie, checkMovie, createSeries, getAllSeries, getAllSeriesByGenre, markFavoriteSeries, unmarkFavoriteSeries, getAllFavoriteSeries, getSeriesById, searchContent, getMovieById, deleteFavoriteMovie } from '../models/content.js';
 import { checkProfile } from '../models/user.js';
 
 /**
@@ -172,6 +172,68 @@ export const addFavorite = async (req, res) => {
 
 }
 
+
+/**
+ * Get series by code
+ * @param {*} req 
+ * @param {*} res 
+ */
+ export const getMoviesByCode = async (req, res) => {
+    try {
+        const { movieCode } = req.params;
+
+        const movies = await getMovieById(movieCode);
+        if (movies) {
+            return res.status(200).send({
+                ok: true,
+                movies
+            })
+        } else {
+            return res.status(400).send({
+                ok: false,
+                errors: [
+                    'No existe esa película'
+                ]
+            })
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send(
+            {
+                ok: false,
+                errors: [
+                    'Error al obtener película.'
+                ]
+            }
+        );
+    }
+}
+
+/**
+ * Remove a favorite series
+ * @param {*} req 
+ * @param {*} res 
+ */
+ export const removeFavoriteMovies = async (req, res) => {
+    const { profileCode } = req.params;
+    const { movieCode } = req.body;
+    try {
+        await deleteFavoriteMovie(movieCode, profileCode);
+        return res.status(200).send({
+            ok: true
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send(
+            {
+                ok: false,
+                errors: [
+                    'No se pudo eliminar la película de favoritos.'
+                ]
+            }
+        );
+    }
+}
 
 /**
  * Adds a series on the system.
@@ -372,7 +434,7 @@ export const getFavoriteSeries = async (req, res) => {
  * @param {*} res 
  * @returns 
  */
- export const getMoviesBySearch = async (req, res) => {
+ export const getContentBySearch = async (req, res) => {
     try {
         const { value } = req.params;
         const content = await searchContent(value)
