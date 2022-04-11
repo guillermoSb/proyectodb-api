@@ -174,3 +174,8 @@ export const updateLockState = async (profileCode, locked) => {
     const updated = await DatabaseManager.knex('profiles').update({ signedIn: locked }).where({ profileCode });
     return updated;
 }
+
+export const toggleActivationProfile = async (profileCode) => {
+    const now = await DatabaseManager.knex('profiles').select('active').where({ profileCode });
+    await DatabaseManager.knex('profiles').update('active',!now[0].active).where({ profileCode });
+}
