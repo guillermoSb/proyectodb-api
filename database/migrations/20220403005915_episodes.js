@@ -10,6 +10,7 @@ export function up(knex) {
             table.string('season').notNullable();
             table.bigint('seriesCode').notNullable().references('seriesCode').inTable('series').onDelete('SET NULL');
             table.text('description');
+            table.text('url').notNullable();
             table.integer('duration').notNullable();
             table.date('datePublished').notNullable();
         });
