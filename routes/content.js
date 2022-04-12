@@ -13,7 +13,11 @@ import {
     markMovieAsFinished,
     getFinishedMovies,
     markEpisodeAsFinished,
-    getFinishedSeries
+    getFinishedSeries,
+    markEpisodeAsStarted,
+    getInProgressSeries,
+    markMovieAsStarted,
+    getInProgressMovies
 } from '../controllers/content.js';
 import { validateFields } from '../middlewares/request-validator.js';
 //import { getAllGenres } from '../models/content.js';
@@ -127,6 +131,29 @@ router.get('/series/:profileCode/finished', [
     check('profileCode').custom(validateProfileExists),
     validateFields
 ], getFinishedSeries);
+
+
+router.post('/series/:profileCode/started', [
+    check('profileCode').custom(validateProfileExists),
+    check('episodeCode', 'El codigo del episodio no debe estar vacio.').notEmpty(),
+    validateFields
+], markEpisodeAsStarted);
+
+router.get('/series/:profileCode/in-progress', [
+    check('profileCode').custom(validateProfileExists),
+    validateFields
+], getInProgressSeries);
+
+router.post('/movies/:profileCode/started', [
+    check('profileCode').custom(validateProfileExists),
+
+    validateFields
+], markMovieAsStarted);
+
+router.get('/movies/:profileCode/in-progress', [
+    check('profileCode').custom(validateProfileExists),
+    validateFields
+], getInProgressMovies);
 
 
 
