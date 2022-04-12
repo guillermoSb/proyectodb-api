@@ -292,6 +292,11 @@ export const fetchFinishedMovies = async (profileCode) => {
     return activity;
 }
 
+/**
+ * Fetch the started movies
+ * @param {*} profileCode 
+ * @returns 
+ */
 export const fetchStartedMovies = async (profileCode) => {
     // 1. Fetch the movies that are started but not finished
     const finishedMovies = DatabaseManager.knex('userMovieActivities').distinct('userMovieActivities.movieCode').where({
@@ -311,6 +316,8 @@ export const fetchStartedMovies = async (profileCode) => {
     // 2. Return the results
     return activity;
 }
+
+
 
 
 /**
@@ -341,6 +348,56 @@ export const createEpisodeStartedActivity = async (episodeCode, profileCode) => 
         finished: false
     }, '*');
     return activity;
+}
+
+/**
+ * Fetch the started series
+ * @param {*} profileCode 
+ * @returns 
+ */
+export const fetchStartedSeries = async (profileCode) => {
+    if (isNaN(profileCode)) {
+        return [];
+    }
+    const results = await DatabaseManager.knex.select('*').fromRaw(`
+    (
+        SELECT * FROM
+series
+WHERE(
+    SELECT COUNT(DISTINCT "episodeCode") 
+	FROM "userSeriesActivities"
+	WHERE finished = false AND "profileCode" = ? AND "episodeCode" IN(
+        SELECT "episodeCode"
+		FROM episodes
+		WHERE episodes."seriesCode" = series."seriesCode"
+    )
+) > 0 AND(
+    SELECT COUNT(DISTINCT "episodeCode") 
+	FROM "userSeriesActivities"
+	WHERE finished = false AND "profileCode" = ? AND "episodeCode" IN(
+        SELECT "episodeCode"
+		FROM episodes
+		WHERE episodes."seriesCode" = series."seriesCode"
+    )
+) <= (SELECT COUNT(*)
+		FROM episodes
+		WHERE episodes."seriesCode" = series."seriesCode") AND(
+    SELECT COUNT(*)
+			FROM episodes
+			WHERE episodes."seriesCode" = series."seriesCode"
+) != (
+        SELECT COUNT(DISTINCT "episodeCode") 
+				FROM "userSeriesActivities"
+				WHERE finished = true AND "profileCode" = ? AND "episodeCode" IN(
+            SELECT "episodeCode"
+					FROM episodes
+					WHERE episodes."seriesCode" = series."seriesCode"
+        )
+		)
+    ) as d
+    `, [profileCode, profileCode, profileCode])
+    return results;
+
 }
 
 
@@ -378,3 +435,5 @@ export const fetchFinishedSeries = async (profileCode) => {
     return result;
 
 }
+
+

@@ -1,5 +1,5 @@
 import { DatabaseManager } from '../database/manager.js';
-import { getAllFavoriteMovies, getAllMoviesByGenre, getAllMovies, addNewFavoriteMovie, checkMovie, createSeries, getAllSeries, getAllSeriesByGenre, markFavoriteSeries, unmarkFavoriteSeries, getAllFavoriteSeries, getSeriesById, unmarkFavoriteMovie, getMovieById, createMovieFinishedActivity, fetchFinishedMovies, createEpisodeFinishedActivity, fetchFinishedSeries, createEpisodeStartedActivity, createMovieStartedActivity, fetchStartedMovies } from '../models/content.js';
+import { getAllFavoriteMovies, getAllMoviesByGenre, getAllMovies, addNewFavoriteMovie, checkMovie, createSeries, getAllSeries, getAllSeriesByGenre, markFavoriteSeries, unmarkFavoriteSeries, getAllFavoriteSeries, getSeriesById, unmarkFavoriteMovie, getMovieById, createMovieFinishedActivity, fetchFinishedMovies, createEpisodeFinishedActivity, fetchFinishedSeries, createEpisodeStartedActivity, createMovieStartedActivity, fetchStartedMovies, fetchStartedSeries } from '../models/content.js';
 import { checkProfile } from '../models/user.js';
 
 /**
@@ -592,7 +592,22 @@ export const markEpisodeAsStarted = async (req, res) => {
  * @param {*} res 
  */
 export const getInProgressSeries = async (req, res) => {
-
+    try {
+        const { profileCode } = req.params;
+        const series = await fetchStartedSeries(profileCode);
+        return res.status(200).send({
+            ok: true,
+            series
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({
+            ok: false,
+            errors: [
+                'No se pudo obtener las series en progreso.'
+            ]
+        })
+    }
 }
 
 /**
