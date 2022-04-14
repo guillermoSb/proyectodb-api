@@ -1,5 +1,5 @@
 import { DatabaseManager } from '../database/manager.js';
-import { getAllFavoriteMovies, getAllMoviesByGenre, getAllMovies, addNewFavoriteMovie, checkMovie, createSeries, getAllSeries, getAllSeriesByGenre, markFavoriteSeries, unmarkFavoriteSeries, getAllFavoriteSeries, getSeriesById,searchContent, deleteFavoriteMovie, unmarkFavoriteMovie, getMovieById, createMovieFinishedActivity, fetchFinishedMovies, createEpisodeFinishedActivity, fetchFinishedSeries } from '../models/content.js';
+import { getAllFavoriteMovies, getAllMoviesByGenre, getAllMovies, addNewFavoriteMovie, checkMovie, createSeries, getAllSeries, getAllSeriesByGenre, markFavoriteSeries, unmarkFavoriteSeries, getAllFavoriteSeries, getSeriesById, unmarkFavoriteMovie, getMovieById, createMovieFinishedActivity, fetchFinishedMovies, createEpisodeFinishedActivity, fetchFinishedSeries, createEpisodeStartedActivity, createMovieStartedActivity, fetchStartedMovies, fetchStartedSeries, searchContent, deleteFavoriteMovie } from '../models/content.js';
 import { checkProfile } from '../models/user.js';
 
 /**
@@ -214,7 +214,7 @@ export const addFavorite = async (req, res) => {
  * @param {*} req 
  * @param {*} res 
  */
- export const getMoviesByCode = async (req, res) => {
+export const getMoviesByCode = async (req, res) => {
     try {
         const { movieCode } = req.params;
 
@@ -250,7 +250,7 @@ export const addFavorite = async (req, res) => {
  * @param {*} req 
  * @param {*} res 
  */
- export const removeFavoriteMovies = async (req, res) => {
+export const removeFavoriteMovies = async (req, res) => {
     const { profileCode } = req.params;
     const { movieCode } = req.body;
     try {
@@ -532,7 +532,7 @@ export const getFavoriteSeries = async (req, res) => {
  * @param {*} res 
  * @returns 
  */
- export const getContentBySearch = async (req, res) => {
+export const getContentBySearch = async (req, res) => {
     try {
         const { value } = req.params;
         const content = await searchContent(value)
@@ -646,6 +646,100 @@ export const getFinishedSeries = async (req, res) => {
             ok: false,
             errors: [
                 'Error al obtener series terminadas.'
+            ]
+        })
+    }
+}
+
+/**
+ * Mark an episode as started
+ * @param {*} req 
+ * @param {*} res 
+ */
+export const markEpisodeAsStarted = async (req, res) => {
+    try {
+        const { profileCode } = req.params;
+        const { episodeCode } = req.body;
+        await createEpisodeStartedActivity(episodeCode, profileCode);
+        return res.status(200).send({
+            ok: true
+        });
+    } catch (error) {
+        return res.status(500).send({
+            ok: false,
+            errors: [
+                'No se pudo marcar el episodio como empezado.'
+            ]
+        })
+    }
+}
+
+/**
+ * Mark a series as in progress
+ * @param {*} req 
+ * @param {*} res 
+ */
+export const getInProgressSeries = async (req, res) => {
+    try {
+        const { profileCode } = req.params;
+        const series = await fetchStartedSeries(profileCode);
+        return res.status(200).send({
+            ok: true,
+            series
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({
+            ok: false,
+            errors: [
+                'No se pudo obtener las series en progreso.'
+            ]
+        })
+    }
+}
+
+/**
+ * Mark a movie as started
+ * @param {*} req 
+ * @param {*} res 
+ */
+export const markMovieAsStarted = async (req, res) => {
+    try {
+        const { profileCode } = req.params;
+        const { movieCode } = req.body;
+        await createMovieStartedActivity(movieCode, profileCode);
+        return res.status(200).send({
+            ok: true
+        });
+    } catch (error) {
+        return res.status(500).send({
+            ok: false,
+            errors: [
+                'No se pudo marcar la pelicula como empezada.'
+            ]
+        })
+    }
+}
+
+/**
+ * Get all the movies in progress
+ * @param {*} req 
+ * @param {*} res 
+ */
+export const getInProgressMovies = async (req, res) => {
+    try {
+        const { profileCode } = req.params;
+        const movies = await fetchStartedMovies(profileCode);
+        return res.status(200).send({
+            ok: true,
+            movies
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({
+            ok: false,
+            errors: [
+                'No se pudo obtener las peliculas en progreso.'
             ]
         })
     }
