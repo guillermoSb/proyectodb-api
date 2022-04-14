@@ -8,7 +8,14 @@ import {
     addFavoriteSeries,
     removeFavoriteSeries,
     getSeriesByCode,
-    getMoviesBySearch,
+    getContentBySearch,
+    getMoviesByCode,
+    removeFavoriteMovie,
+    getMovieByCode,
+    markMovieAsFinished,
+    getFinishedMovies,
+    markEpisodeAsFinished,
+    getFinishedSeries
 } from '../controllers/content.js';
 import { validateFields } from '../middlewares/request-validator.js';
 //import { getAllGenres } from '../models/content.js';
@@ -30,14 +37,14 @@ router.get('/movies/:genre',
 router.get('/movies/:profileCode/favorites',
     [
         param('profileCode', 'El código de perfil debe ser un número').isNumeric(),
-        param('profileCode', 'El código de perfil es requerido').custom(validateUserExists),
+        check('profileCode').custom(validateProfileExists),
         validateFields
     ],
     getFavouriteMovies);
 
 
 
-router.post('movies/:profileCode/favorites',
+router.post('/movies/:profileCode/favorites',
     [
         check('profileCode', 'El código de perfil no es válido').isNumeric(),
         check('movieCode', 'El código de película no es válido').isNumeric(),
@@ -45,6 +52,11 @@ router.post('movies/:profileCode/favorites',
     ],
     addFavorite
 );
+
+router.delete('/movies/:profileCode/favorites', [
+    param('profileCode', 'El codigo del perfil no es valido').custom(validateProfileExists),
+    check('movieCode', 'El codigo de la serie es requerido').notEmpty()
+], removeFavoriteMovie)
 
 
 router.get('/series', getSeries);  // Get all series
@@ -68,7 +80,13 @@ router.get('/series/:genre', [
 router.get('/series/single/:seriesCode', [
     check('seriesCode', 'El código de la serie es requerido.').notEmpty().isNumeric(),
     validateFields
-], getSeriesByCode)
+], getSeriesByCode);
+
+
+router.get('/movies/single/:movieCode', [
+    check('movieCode', 'El código de la pelicula es requerido.').notEmpty().isNumeric(),
+    validateFields
+], getMovieByCode);
 
 router.get(
     '/series/:profileCode/favorites',
@@ -85,16 +103,37 @@ router.post('/series/:profleCode/favorites',
     ],
     addFavoriteSeries);    // Post favorites to specific profile code
 
-router.delete('/series/:profleCode/favorites',
+router.delete('/series/:profileCode/favorites',
     [param('profileCode', 'El codigo del perfil no es valido').custom(validateProfileExists),
     check('seriesCode', 'El codigo de la serie es requerido').notEmpty()],
     removeFavoriteSeries);    // Delete a specific series from the favorites
 
-router.get('/movies/:value/search',
+router.get('/:value/search',
     [
         check('value', 'El valor es requerido').notEmpty(),
         validateFields
-    ],getMoviesBySearch);
+    ],getContentBySearch);
+router.post('/movies/:profileCode/finished', [
+    check('profileCode').custom(validateProfileExists),
+    check('movieCode', 'El codigo de la pelicula no debe estar vacío.').notEmpty(),
+    validateFields
+], markMovieAsFinished);
+
+router.get('/movies/:profileCode/finished', [
+    check('profileCode').custom(validateProfileExists),
+    validateFields
+], getFinishedMovies);
+
+router.post('/series/:profileCode/finished', [
+    check('profileCode').custom(validateProfileExists),
+    check('episodeCode', 'El codigo del episodio no debe estar vacio.').notEmpty(),
+    validateFields
+], markEpisodeAsFinished);
+
+router.get('/series/:profileCode/finished', [
+    check('profileCode').custom(validateProfileExists),
+    validateFields
+], getFinishedSeries);
 
 
 

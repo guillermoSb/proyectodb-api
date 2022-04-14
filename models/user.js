@@ -18,6 +18,7 @@ export const createUser = async (plan, role, user, email, password, name, lastNa
     const userObject = {
         user, email, password: newPass, name, lastName, active, plan
     }
+
     const dbUser = await transaction('users').insert(userObject, ['*']);    // Create the user on the db
     delete dbUser[0].password; // Do not return the password
     return dbUser[0];  // Return the created user
@@ -36,7 +37,7 @@ export const getUser = async (userCode) => {
     delete users[0].password
 
 
-    const { userCode: code, user, email, name, lastName, active, plan, profileCount } = users[0];
+    const { userCode: code, user, email, name, lastName, active, plan, profileCount, adFrequency } = users[0];
 
     const userObject = {
         userCode: code,
@@ -47,7 +48,8 @@ export const getUser = async (userCode) => {
         active,
         plan: {
             plan,
-            profileCount
+            profileCount,
+            adFrequency
         }
     }
 
@@ -97,6 +99,18 @@ export const authUser = async (email, password) => {
     if (user.length != 1) return null; // Check for user not found
     const passwordValid = await checkPassword(password, user[0].password);
     if (!passwordValid) return null;    // Check for password valid
+    delete user[0].password;
+    return user;
+}
+
+/**
+ * Auths an user
+ * @param {string} userCode 
+ * @returns user
+ */
+export const authUserWithToken = async (userCode) => {
+    const user = await DatabaseManager.knex('users').select('*').where({ userCode });    // Get the user
+    if (user.length != 1) return null; // Check for user not found
     delete user[0].password;
     return user;
 }
@@ -153,4 +167,15 @@ export const getUserProfiles = async (userCode) => {
 export const checkProfile = async (profileCode) => {
     const profiles = await DatabaseManager.knex('profiles').select('*').where({ profileCode });
     return profiles;
+}
+
+
+export const updateLockState = async (profileCode, locked) => {
+    const updated = await DatabaseManager.knex('profiles').update({ signedIn: locked }).where({ profileCode });
+    return updated;
+}
+
+export const toggleActivationProfile = async (profileCode) => {
+    const now = await DatabaseManager.knex('profiles').select('active').where({ profileCode });
+    await DatabaseManager.knex('profiles').update('active',!now[0].active).where({ profileCode });
 }

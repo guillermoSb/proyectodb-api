@@ -10,9 +10,7 @@ export function up(knex) {
             table.string('name').notNullable();
             table.string('photo');
             table.boolean('active').defaultTo(true, { constraintName: 'df_users_active' }).notNullable();
-
         })
-
 }
 
 /**
