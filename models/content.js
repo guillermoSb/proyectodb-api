@@ -410,6 +410,20 @@ export const createMovieFinishedActivity = async (movieCode, profileCode) => {
 }
 
 /**
+ * Create a movie finished activity
+ * @param {number} movieCode 
+ * @param {number} profileCode 
+ * @returns 
+ */
+export const createMovieStartedActivity = async (movieCode, profileCode) => {
+    const activity = await DatabaseManager.knex('userMovieActivities').insert({
+        movieCode,
+        profileCode
+    }, '*');
+    return activity;
+}
+
+/**
  * Fetch the finished movies from the database
  */
 export const fetchFinishedMovies = async (profileCode) => {
@@ -422,6 +436,33 @@ export const fetchFinishedMovies = async (profileCode) => {
     // 2. Return the results
     return activity;
 }
+
+/**
+ * Fetch the started movies
+ * @param {*} profileCode 
+ * @returns 
+ */
+export const fetchStartedMovies = async (profileCode) => {
+    // 1. Fetch the movies that are started but not finished
+    const finishedMovies = DatabaseManager.knex('userMovieActivities').distinct('userMovieActivities.movieCode').where({
+        profileCode,
+        finished: true
+    })
+    const activity = await DatabaseManager.knex('userMovieActivities')
+        .distinct('userMovieActivities.movieCode', 'movies.title', 'movies.coverUrl')
+        .whereNotIn('userMovieActivities.movieCode', finishedMovies)
+        .andWhere({
+            profileCode,
+            finished: false
+        })
+        .leftJoin('movies', 'userMovieActivities.movieCode', 'movies.movieCode');
+
+
+    // 2. Return the results
+    return activity;
+}
+
+
 
 
 /**
@@ -438,6 +479,72 @@ export const createEpisodeFinishedActivity = async (episodeCode, profileCode) =>
     }, '*');
     return activity;
 }
+
+/**
+ * Create a episode finished activity
+ * @param {number} episodeCode 
+ * @param {number} profileCode 
+ * @returns 
+ */
+export const createEpisodeStartedActivity = async (episodeCode, profileCode) => {
+    const activity = await DatabaseManager.knex('userSeriesActivities').insert({
+        episodeCode,
+        profileCode,
+        finished: false
+    }, '*');
+    return activity;
+}
+
+/**
+ * Fetch the started series
+ * @param {*} profileCode 
+ * @returns 
+ */
+export const fetchStartedSeries = async (profileCode) => {
+    if (isNaN(profileCode)) {
+        return [];
+    }
+    const results = await DatabaseManager.knex.select('*').fromRaw(`
+    (
+        SELECT * FROM
+series
+WHERE(
+    SELECT COUNT(DISTINCT "episodeCode") 
+	FROM "userSeriesActivities"
+	WHERE finished = false AND "profileCode" = ? AND "episodeCode" IN(
+        SELECT "episodeCode"
+		FROM episodes
+		WHERE episodes."seriesCode" = series."seriesCode"
+    )
+) > 0 AND(
+    SELECT COUNT(DISTINCT "episodeCode") 
+	FROM "userSeriesActivities"
+	WHERE finished = false AND "profileCode" = ? AND "episodeCode" IN(
+        SELECT "episodeCode"
+		FROM episodes
+		WHERE episodes."seriesCode" = series."seriesCode"
+    )
+) <= (SELECT COUNT(*)
+		FROM episodes
+		WHERE episodes."seriesCode" = series."seriesCode") AND(
+    SELECT COUNT(*)
+			FROM episodes
+			WHERE episodes."seriesCode" = series."seriesCode"
+) != (
+        SELECT COUNT(DISTINCT "episodeCode") 
+				FROM "userSeriesActivities"
+				WHERE finished = true AND "profileCode" = ? AND "episodeCode" IN(
+            SELECT "episodeCode"
+					FROM episodes
+					WHERE episodes."seriesCode" = series."seriesCode"
+        )
+		)
+    ) as d
+    `, [profileCode, profileCode, profileCode])
+    return results;
+
+}
+
 
 /**
  * Fetch the finished series from the database
