@@ -638,7 +638,7 @@ export const fetchFeaturedMovies = async (profileCode) => {
             .limit(5)
         ).map(res => res.movieCode)
     }
-    const movies = await DatabaseManager.knex('movies').select('*').whereIn('movieCode', movieCodes)
+    const movies = await DatabaseManager.knex('movies').select('*').whereIn('movieCode', movieCodes).limit(10)
     return movies;
 }
 
@@ -702,6 +702,6 @@ export const fetchFeaturedSeries = async (profileCode) => {
             .limit(5)
         ).map(res => res.seriesCode)
     }
-    const series = await DatabaseManager.knex('series').select('*').whereIn('seriesCode', seriesCodes)
+    const series = await DatabaseManager.knex('series').select('*').whereIn('seriesCode', seriesCodes).limit(10)
     return series;
 }
