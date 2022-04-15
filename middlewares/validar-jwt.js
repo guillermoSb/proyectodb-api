@@ -35,8 +35,9 @@ export const validarJWT = async (req = response, res = request, next) => {
         next();
 
     } catch (error) {
-        console.log(error);
-        res.status(401).json({
+        //console.log(error);
+
+        return res.status(401).json({
             ok: false,
             errors: [
                 'No hay token en la peticion'
