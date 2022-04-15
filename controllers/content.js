@@ -1,5 +1,5 @@
 import { DatabaseManager } from '../database/manager.js';
-import { getAllFavoriteMovies, getAllMoviesByGenre, getAllMovies, addNewFavoriteMovie, checkMovie, createSeries, getAllSeries, getAllSeriesByGenre, markFavoriteSeries, unmarkFavoriteSeries, getAllFavoriteSeries, getSeriesById, unmarkFavoriteMovie, getMovieById, createMovieFinishedActivity, fetchFinishedMovies, createEpisodeFinishedActivity, fetchFinishedSeries, createEpisodeStartedActivity, createMovieStartedActivity, fetchStartedMovies, fetchStartedSeries, searchContent, deleteFavoriteMovie, fetchFeaturedMovies } from '../models/content.js';
+import { getAllFavoriteMovies, getAllMoviesByGenre, getAllMovies, addNewFavoriteMovie, checkMovie, createSeries, getAllSeries, getAllSeriesByGenre, markFavoriteSeries, unmarkFavoriteSeries, getAllFavoriteSeries, getSeriesById, unmarkFavoriteMovie, getMovieById, createMovieFinishedActivity, fetchFinishedMovies, createEpisodeFinishedActivity, fetchFinishedSeries, createEpisodeStartedActivity, createMovieStartedActivity, fetchStartedMovies, fetchStartedSeries, searchContent, deleteFavoriteMovie, fetchFeaturedMovies, fetchFeaturedSeries } from '../models/content.js';
 import { checkProfile } from '../models/user.js';
 
 /**
@@ -753,13 +753,12 @@ export const getInProgressMovies = async (req, res) => {
  */
 export const getFeaturedMovies = async (req, res) => {
     try {
-        const featured = await fetchFeaturedMovies(req.params.profileCode);
+        const movies = await fetchFeaturedMovies(req.params.profileCode);
         return res.status(200).send({
             ok: true,
-            featured
+            movies
         })
     } catch (error) {
-        console.log(error);
         return res.status(500).send({
             ok: false,
             errors: [
@@ -777,8 +776,13 @@ export const getFeaturedMovies = async (req, res) => {
  */
 export const getFeaturedSeries = async (req, res) => {
     try {
-
+        const series = await fetchFeaturedSeries(req.params.profileCode);
+        return res.status(200).send({
+            ok: true,
+            series
+        })
     } catch (error) {
+        console.log(error);
         return res.status(500).send({
             ok: false,
             errors: [

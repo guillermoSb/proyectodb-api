@@ -608,8 +608,9 @@ export const fetchFeaturedMovies = async (profileCode) => {
         .groupBy('directorCode')
         .orderBy('count', 'desc')
         .limit(5)).map(res => res.directorCode)
+
     // actor
-    const mostViewedActor = (await DatabaseManager
+    const mostViewedActors = (await DatabaseManager
         .knex('userMovieActivities')
         .select('actorCode')
         .count()
@@ -619,12 +620,16 @@ export const fetchFeaturedMovies = async (profileCode) => {
         .groupBy('actorCode')
         .orderBy('count', 'desc')
         .limit(5)).map(res => res.actorCode);
-    let movieCodes = (await DatabaseManager.knex('movies')
+    let movieCodes = (await DatabaseManager
+        .knex('movies')
         .distinct('movies.movieCode')
-        .rightJoin('casting_movies', 'casting_movies.movieCode', 'movies.movieCode')
         .whereIn('genre', mostViewedGenres)
         .orWhereIn('directorCode', mostViewedDirector)
-        .orWhereIn('casting_movies.actorCode', mostViewedActor)).map(res => res.movieCode)
+        .orWhereIn('movies.movieCode', DatabaseManager.knex('casting_movies').select('movieCode').whereIn(
+            'actorCode',
+            mostViewedActors
+        ))
+    ).map(res => res.movieCode)
 
     if (!movieCodes) {
         movieCodes = (await DatabaseManager.knex('movies')
@@ -642,5 +647,61 @@ export const fetchFeaturedMovies = async (profileCode) => {
  * @param {number} profileCode 
  */
 export const fetchFeaturedSeries = async (profileCode) => {
+    // genre
 
+    const mostViewedGenres = (await DatabaseManager
+        .knex('userSeriesActivities')
+        .select('genre')
+        .count()
+        .join('episodes', 'userSeriesActivities.episodeCode', 'episodes.episodeCode')
+        .join('series', 'episodes.seriesCode', 'series.seriesCode')
+        .where({ profileCode })
+        .groupBy('genre')
+        .orderBy('count', 'desc')
+        .limit(1)).map(res => res.genre);
+
+    // director
+    const mostViewedDirector = (await DatabaseManager
+        .knex('userSeriesActivities')
+        .select('directorCode')
+        .count()
+        .join('episodes', 'userSeriesActivities.episodeCode', 'episodes.episodeCode')
+        .join('series', 'episodes.seriesCode', 'series.seriesCode')
+        .where({ profileCode })
+        .groupBy('directorCode')
+        .orderBy('count', 'desc')
+        .limit(5)).map(res => res.directorCode)
+
+    // actor
+    const mostViewedActors = (await DatabaseManager
+        .knex('userSeriesActivities')
+        .select('actorCode')
+        .count()
+        .join('episodes', 'userSeriesActivities.episodeCode', 'episodes.episodeCode')
+        .join('series', 'episodes.seriesCode', 'series.seriesCode')
+        .rightJoin('casting_series', 'casting_series.seriesCode', 'series.seriesCode')
+        .where({ profileCode })
+        .groupBy('actorCode')
+        .orderBy('count', 'desc')
+        .limit(5)).map(res => res.actorCode);
+    let seriesCodes = (await DatabaseManager
+        .knex('series')
+        .distinct('series.seriesCode')
+        .whereIn('genre', mostViewedGenres)
+        .orWhereIn('directorCode', mostViewedDirector)
+        .orWhereIn('series.seriesCode', DatabaseManager.knex('casting_series').select('seriesCode').whereIn(
+            'actorCode',
+            mostViewedActors
+        ))
+    ).map(res => res.seriesCode)
+
+    if (!seriesCodes) {
+        seriesCodes = (await DatabaseManager.knex('series')
+            .select('series.seriesCode')
+            .rightJoin('casting_series', 'casting_series.seriesCode', 'series.seriesCode')
+            .limit(5)
+        ).map(res => res.seriesCode)
+    }
+    const series = await DatabaseManager.knex('series').select('*').whereIn('seriesCode', seriesCodes)
+    return series;
 }
