@@ -5,14 +5,13 @@
 export function up(knex) {
     return knex.schema
         .createTable('ad_movie_relationships', (table) => {
-            table.string('adCode').notNullable().references('adCode').inTable('ads').onDelete('cascade');
-            table.string('movieCode').notNullable().references('movieCode').inTable('movies').onDelete('cascade');
+            table.bigInteger('adCode').notNullable().references('adCode').inTable('ads').onDelete('cascade');
+            table.bigInteger('movieCode').notNullable().references('movieCode').inTable('movies').onDelete('cascade');
         })
         .createTable('ad_series_relationships', (table) => {
-            table.string('adCode').notNullable().references('adCode').inTable('ads').onDelete('cascade');
-            table.string('seriesCode').notNullable().references('seriesCode').inTable('series').onDelete('cascade');
+            table.bigInteger('adCode').notNullable().references('adCode').inTable('ads').onDelete('cascade');
+            table.bigInteger('seriesCode').notNullable().references('seriesCode').inTable('series').onDelete('cascade');
         })
-
 };
 
 /**
