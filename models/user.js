@@ -185,17 +185,17 @@ export const downgradeUser = async (userCode) => {
         'advanced':2,
         'standard':1,
         'basic':0}
-    const typesList = ['advanced','standard','basic'];
     const now = await DatabaseManager.knex('users').select('plan').where({userCode});
     const value = types[now[0].plan]
     if (value >0) {
-        //DatabaseManager.knex('users').update('plan',typesList[value-1]);
-        const name = typesList[value-1];
-        const profiles = await DatabaseManager.knex('profiles').where({userCode});
-        const profileCount = await DatabaseManager.knex('plans').select('profileCount').where({name});
-        const profilesCodeToBeDeactivated = await DatabaseManager.knex('profiles').select('profileCode').where({userCode}).limit(Object.keys(profiles).length-(profileCount)[0].profileCount);
+        const name = Object.keys(types)[value-1];
+        await DatabaseManager.knex('users').update('plan',name).where({userCode});
+        const profiles = await DatabaseManager.knex('profiles').where({userCode, active:true});
+        const profileCountByPlan = await DatabaseManager.knex('plans').select('profileCount').where({name});
+        const profilesCodeToBeDeactivated = await DatabaseManager.knex('profiles').select('profileCode').where({userCode, active:true}).limit(Object.keys(profiles).length-(profileCountByPlan)[0].profileCount);
 
         const asd = profilesCodeToBeDeactivated.map(value => {return Object.values(value)[0]})
+        console.log(asd);
         if (Object.keys(profiles).length > (profileCount)[0].profileCount) {
             await DatabaseManager.knex('profiles').update('active',false).where({userCode}).whereIn('profileCode',asd);
         }
