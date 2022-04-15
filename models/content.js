@@ -59,6 +59,23 @@ export const addNewFavoriteMovie = async (profileCode, movieCode, transaction) =
 
 }
 
+export const deleteFavoriteMovie = async (movieCode, profileCode) => {
+    // Check if the series is already favorite
+    const favoriteAlready = await DatabaseManager.knex('favorite_movies').select('*').where({
+        movieCode,
+        profileCode
+    });
+
+    if (favoriteAlready.length !== 0) {
+        await DatabaseManager.knex('favorite_movie').delete().where({
+            movieCode,
+            profileCode
+        });
+    }
+}
+
+
+
 
 /**
  * @param {string} movieCode
@@ -218,7 +235,10 @@ export const getAllFavoriteSeries = async (profileCode) => {
  */
 export const getSeriesById = async (seriesCode) => {
     const series = await DatabaseManager
-        .knex('series').select('*').where({ seriesCode });
+        .knex('series').select('*').where({ seriesCode })
+        .innerJoin('studios', 'series.studioCode', 'studios.studioCode')
+        .innerJoin('directors', 'series.directorCode', 'directors.directorCode');
+
 
     if (series.length !== 0) {
         const episodes = await DatabaseManager.knex('episodes').select('name', 'season', 'datePublished', 'url', 'episodeCode').where({ seriesCode });
@@ -233,9 +253,134 @@ export const getSeriesById = async (seriesCode) => {
 
 
 /**
- * Get a movie by code
- * @param {number} movieCode 
+ * @param {number} value
  */
+const searchMovies = async (value, dataLabels) => {
+
+    const moviesByName = await DatabaseManager
+        .knex('movies').select(dataLabels).whereILike('title', '%' + value + '%')
+        .innerJoin('studios', 'movies.studioCode', 'studios.studioCode')
+        .innerJoin('directors', 'movies.directorCode', 'directors.directorCode');
+
+    const moviesByGenre = await DatabaseManager
+        .knex('movies').select(dataLabels).whereILike('genre', '%' + value + '%')
+        .innerJoin('directors', 'movies.directorCode', 'directors.directorCode')
+        .innerJoin('studios', 'movies.studioCode', 'studios.studioCode')
+
+    const moviesByCategory = await DatabaseManager
+        .knex('movies').select(dataLabels).whereILike('categories', '%' + value + '%')
+        .innerJoin('directors', 'movies.directorCode', 'directors.directorCode')
+        .innerJoin('studios', 'movies.studioCode', 'studios.studioCode');
+
+    const moviesByDirector = await DatabaseManager
+        .knex('movies').select(dataLabels).innerJoin('directors', 'movies.directorCode', 'directors.directorCode')
+        .whereILike('directors.name', '%' + value + '%').orWhereILike('lastName', '%' + value + '%')
+        .innerJoin('studios', 'movies.studioCode', 'studios.studioCode');
+
+    const moviesByStudio = await DatabaseManager
+        .knex('movies').select(dataLabels).innerJoin('studios', 'movies.studioCode', 'studios.studioCode')
+        .whereILike('studios.name', '%' + value + '%').innerJoin('directors', 'movies.directorCode', 'directors.directorCode');
+
+    const moviesByActor = await DatabaseManager
+        .knex('movies').select(dataLabels)
+        .innerJoin('casting_movies', 'casting_movies.movieCode', 'movies.movieCode')
+        .innerJoin('actors', 'casting_movies.actorCode', 'actors.actorCode')
+        .whereILike('actors.name', '%' + value + '%').orWhereILike('actors.lastName', '%' + value + '%')
+        .innerJoin('directors', 'movies.directorCode', 'directors.directorCode')
+        .innerJoin('studios', 'movies.studioCode', 'studios.studioCode');
+
+    /* const moviesByDate = await DatabaseManager
+    .knex('movies').select(dataLabels).innerJoin('studios', 'movies.studioCode','studios.studioCode')
+    .whereILike( 'publishedAt', '%'+value+'%').innerJoin('directors', 'movies.directorCode','directors.directorCode');
+ */
+    const movies = moviesByName.concat(moviesByGenre, moviesByCategory, moviesByDirector, moviesByStudio, moviesByActor);
+
+    const cleanData = movies.filter((value, index) => {
+        const _value = JSON.stringify(value);
+        return index === movies.findIndex(obj => {
+            return JSON.stringify(obj) === _value;
+        });
+    });
+
+    return cleanData;
+
+}
+
+
+/**
+ * @param {number} value
+ */
+const searchSeries = async (value, dataLabels) => {
+
+    const seiresByName = await DatabaseManager
+        .knex('series').select(dataLabels).whereILike('title', '%' + value + '%')
+        .innerJoin('studios', 'series.studioCode', 'studios.studioCode')
+        .innerJoin('directors', 'series.directorCode', 'directors.directorCode');
+
+    const seriesByGenre = await DatabaseManager
+        .knex('series').select(dataLabels).whereILike('genre', '%' + value + '%')
+        .innerJoin('directors', 'series.directorCode', 'directors.directorCode')
+        .innerJoin('studios', 'series.studioCode', 'studios.studioCode')
+
+    const seriesByCategory = await DatabaseManager
+        .knex('series').select(dataLabels).whereILike('categories', '%' + value + '%')
+        .innerJoin('directors', 'series.directorCode', 'directors.directorCode')
+        .innerJoin('studios', 'series.studioCode', 'studios.studioCode');
+
+    const seriesByDirector = await DatabaseManager
+        .knex('series').select(dataLabels).innerJoin('directors', 'series.directorCode', 'directors.directorCode')
+        .whereILike('directors.name', '%' + value + '%').orWhereILike('lastName', '%' + value + '%')
+        .innerJoin('studios', 'series.studioCode', 'studios.studioCode');
+
+    const seriessByStudio = await DatabaseManager
+        .knex('series').select(dataLabels).innerJoin('studios', 'series.studioCode', 'studios.studioCode')
+        .whereILike('studios.name', '%' + value + '%').innerJoin('directors', 'series.directorCode', 'directors.directorCode');
+
+
+    const seriesByActor = await DatabaseManager
+        .knex('series').select(dataLabels)
+        .innerJoin('casting_series', 'casting_series.seriesCode', 'series.seriesCode')
+        .innerJoin('actors', 'casting_series.actorCode', 'actors.actorCode')
+        .whereILike('actors.name', '%' + value + '%').orWhereILike('actors.lastName', '%' + value + '%')
+        .innerJoin('directors', 'series.directorCode', 'directors.directorCode')
+        .innerJoin('studios', 'series.studioCode', 'studios.studioCode');
+    /* const seriesByDate = await DatabaseManager
+    .knex('series').select(dataLabels).innerJoin('studios', 'series.studioCode','studios.studioCode')
+    .whereILike( 'publishedAt', '%'+value+'%').innerJoin('directors', 'series.directorCode','directors.directorCode');
+ */
+    const series = seiresByName.concat(seriesByGenre, seriesByCategory, seriesByDirector, seriessByStudio, seriesByActor);
+
+    const cleanData = series.filter((value, index) => {
+        const _value = JSON.stringify(value);
+        return index === series.findIndex(obj => {
+            return JSON.stringify(obj) === _value;
+        });
+    });
+
+    return cleanData;
+
+}
+
+/**
+ * @param {number} value
+ */
+export const searchContent = async (value) => {
+
+    const dataLabelsMovies = ['title', 'movies.movieCode', 'genre', 'categories as category', 'studios.name as studio', 'duration', 'publishedAt', 'description', 'rating', 'coverUrl', 'directors.name as directorName', 'directors.lastName as directorLastName']
+    const dataLabelsSeries = ['title', 'series.seriesCode', 'genre', 'categories as category', 'studios.name as studio', 'publishedAt', 'description', 'rating', 'coverUrl', 'directors.name as directorName', 'directors.lastName as directorLastName']
+
+    const movies = searchMovies(value, dataLabelsMovies);
+
+    const series = searchSeries(value, dataLabelsSeries);
+
+    const content = (await movies).concat(await series);
+
+    return content;
+}
+
+/** Get a movie by code
+* @param {number} movieCode 
+*/
 export const getMovieById = async (movieCode) => {
     const movie = await DatabaseManager
         .knex('movies').select('*').where({ movieCode });
@@ -435,5 +580,3 @@ export const fetchFinishedSeries = async (profileCode) => {
     return result;
 
 }
-
-

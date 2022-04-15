@@ -8,6 +8,8 @@ import {
     addFavoriteSeries,
     removeFavoriteSeries,
     getSeriesByCode,
+    getContentBySearch,
+    getMoviesByCode,
     removeFavoriteMovie,
     getMovieByCode,
     markMovieAsFinished,
@@ -105,11 +107,16 @@ router.post('/series/:profleCode/favorites',
     ],
     addFavoriteSeries);    // Post favorites to specific profile code
 
-router.delete('/series/:profleCode/favorites',
+router.delete('/series/:profileCode/favorites',
     [param('profileCode', 'El codigo del perfil no es valido').custom(validateProfileExists),
     check('seriesCode', 'El codigo de la serie es requerido').notEmpty()],
     removeFavoriteSeries);    // Delete a specific series from the favorites
 
+router.get('/:value/search',
+    [
+        check('value', 'El valor es requerido').notEmpty(),
+        validateFields
+    ],getContentBySearch);
 router.post('/movies/:profileCode/finished', [
     check('profileCode').custom(validateProfileExists),
     check('movieCode', 'El codigo de la pelicula no debe estar vacío.').notEmpty(),
