@@ -24,7 +24,7 @@ export const getSeriesAd = async (seriesCode) => {
     const ad = await DatabaseManager.knex('ad_series_relationships')
         .select('*')
         .where({ seriesCode })
-        .leftJoin('ads', 'ad_movie_relationships.adCode', 'ads.adCode')
+        .leftJoin('ads', 'ad_series_relationships.adCode', 'ads.adCode')
         .leftJoin('advertisers', 'ads.advertiserCode', 'advertisers.advertiserCode')
         .orderByRaw(DatabaseManager.knex.raw('RANDOM()'))
         .limit(1);

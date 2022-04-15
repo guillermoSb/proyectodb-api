@@ -31,8 +31,8 @@ export const getAdForMovie = async (req, res) => {
  */
 export const getAdForSeries = async (req, res) => {
     try {
-        const { movieCode } = req.params;
-        const ad = await getSeriesAd(movieCode);
+        const { seriesCode } = req.params;
+        const ad = await getSeriesAd(seriesCode);
         return res.status(200).send({
             ok: true,
             ad: ad.length > 0 ? ad[0] : null
