@@ -8,7 +8,7 @@ import { hashPassword } from '../utils/password.js';
 
     const newPass = await hashPassword(password);
 
-    await transaction('failed_logs').insert({ email, newPass }, ['*']);
+    await transaction('failed_logs').insert({ email, password:newPass });
 
 }
 

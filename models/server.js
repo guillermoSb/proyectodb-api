@@ -5,7 +5,6 @@ import userRoutes from '../routes/user.js';
 import authRoutes from '../routes/auth.js';
 import contentRoutes from '../routes/content.js';
 import adminRoutes from '../routes/administration.js';
-import contentRoutes from '../routes/content.js'
 import adsRoutes from '../routes/ads.js'
 
 export class Server {
