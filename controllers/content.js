@@ -1,5 +1,5 @@
 import { DatabaseManager } from '../database/manager.js';
-import { getAllFavoriteMovies, getAllMoviesByGenre, getAllMovies, addNewFavoriteMovie, checkMovie, createSeries, getAllSeries, getAllSeriesByGenre, markFavoriteSeries, unmarkFavoriteSeries, getAllFavoriteSeries, getSeriesById, unmarkFavoriteMovie, getMovieById, createMovieFinishedActivity, fetchFinishedMovies, createEpisodeFinishedActivity, fetchFinishedSeries, createEpisodeStartedActivity, createMovieStartedActivity, fetchStartedMovies, fetchStartedSeries, searchContent, deleteFavoriteMovie } from '../models/content.js';
+import { getAllFavoriteMovies, getAllMoviesByGenre, getAllMovies, addNewFavoriteMovie, checkMovie, createSeries, getAllSeries, getAllSeriesByGenre, markFavoriteSeries, unmarkFavoriteSeries, getAllFavoriteSeries, getSeriesById, unmarkFavoriteMovie, getMovieById, createMovieFinishedActivity, fetchFinishedMovies, createEpisodeFinishedActivity, fetchFinishedSeries, createEpisodeStartedActivity, createMovieStartedActivity, fetchStartedMovies, fetchStartedSeries, searchContent, deleteFavoriteMovie, fetchFeaturedMovies, fetchFeaturedSeries } from '../models/content.js';
 import { checkProfile } from '../models/user.js';
 
 /**
@@ -740,6 +740,53 @@ export const getInProgressMovies = async (req, res) => {
             ok: false,
             errors: [
                 'No se pudo obtener las peliculas en progreso.'
+            ]
+        })
+    }
+}
+
+/**
+ * Get featured movies
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
+export const getFeaturedMovies = async (req, res) => {
+    try {
+        const movies = await fetchFeaturedMovies(req.params.profileCode);
+        return res.status(200).send({
+            ok: true,
+            movies
+        })
+    } catch (error) {
+        return res.status(500).send({
+            ok: false,
+            errors: [
+                'No se pudo obtener el contenido recomendado.'
+            ]
+        })
+    }
+}
+
+/**
+ * Get featured series
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
+export const getFeaturedSeries = async (req, res) => {
+    try {
+        const series = await fetchFeaturedSeries(req.params.profileCode);
+        return res.status(200).send({
+            ok: true,
+            series
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({
+            ok: false,
+            errors: [
+                'No se pudo obtener el contenido recomendado.'
             ]
         })
     }
