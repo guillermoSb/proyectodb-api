@@ -1,6 +1,110 @@
 import { DatabaseManager } from '../database/manager.js';
-import { getAllFavoriteMovies, getAllMoviesByGenre, getAllMovies, addNewFavoriteMovie, checkMovie, createSeries, getAllSeries, getAllSeriesByGenre, markFavoriteSeries, unmarkFavoriteSeries, getAllFavoriteSeries, getSeriesById, unmarkFavoriteMovie, getMovieById, createMovieFinishedActivity, fetchFinishedMovies, createEpisodeFinishedActivity, fetchFinishedSeries, createEpisodeStartedActivity, createMovieStartedActivity, fetchStartedMovies, fetchStartedSeries, searchContent, deleteFavoriteMovie, fetchFeaturedMovies, fetchFeaturedSeries } from '../models/content.js';
+import {
+    getAllFavoriteMovies, removeMovie, getAllMoviesByGenre, getAllMovies, addNewFavoriteMovie, checkMovie, createSeries, getAllSeries, getAllSeriesByGenre, markFavoriteSeries, unmarkFavoriteSeries, getAllFavoriteSeries, getSeriesById, unmarkFavoriteMovie, getMovieById, createMovieFinishedActivity, fetchFinishedMovies, createEpisodeFinishedActivity, fetchFinishedSeries, createEpisodeStartedActivity, createMovieStartedActivity,
+    fetchStartedMovies, fetchStartedSeries, searchContent,
+    deleteFavoriteMovie, fetchFeaturedMovies, fetchFeaturedSeries, insertMovie, updateMovie
+} from '../models/content.js';
 import { checkProfile } from '../models/user.js';
+
+/**
+ * Get all movies without a genre
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
+export const getAllMoviesWithoutGenre = async (req, res) => {
+    try {
+        const movies = await getAllMovies();
+        res.status(200).send({
+            ok: true,
+            movies
+        });
+    } catch (error) {
+        return res.status(500).send(
+            {
+                ok: false,
+                errors: [
+                    'Error al obtener películas.'
+                ]
+            }
+        );
+    }
+}
+
+
+/**
+ * Modify a movie
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
+export const modifyMovie = async (req, res) => {
+    try {
+        const data = req.body;
+        const { movieCode } = req.params;
+        await updateMovie(movieCode, data);
+        res.status(200).send({
+            ok: true,
+        });
+    } catch (error) {
+        return res.status(500).send(
+            {
+                ok: false,
+                errors: [
+                    'Error al modificar película.'
+                ]
+            }
+        );
+    }
+}
+
+/**
+ * Create a new movie
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
+export const createMovie = async (req, res) => {
+    try {
+        await insertMovie(req.body);
+        return res.status(201).send({
+            ok: true
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({
+            ok: false,
+            errors: [
+                'No se pudo crear la pelicula.'
+            ]
+        })
+    }
+}
+
+
+/**
+ * Delete movies
+ * @param {*} req 
+ * @param {*} res 
+ */
+export const deleteMovie = async (req, res) => {
+    const { movieCode } = req.params;
+    try {
+        await removeMovie(movieCode);
+        res.status(200).send({
+            ok: true,
+        });
+    } catch (error) {
+        return res.status(500).send(
+            {
+                ok: false,
+                errors: [
+                    'Error al eliminar película.'
+                ]
+            }
+        );
+    }
+}
 
 /**
  * Retreive all the users
@@ -101,7 +205,6 @@ export const getMoviesByGenre = async (req, res) => {
 export const getMovies = async (req, res) => {
     try {
         const movies = await getAllMovies();
-
         const moviesByGenre = {};
         for (const movie of movies) {
             if (!moviesByGenre[movie.genre]) {
