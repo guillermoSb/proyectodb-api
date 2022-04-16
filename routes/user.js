@@ -1,7 +1,7 @@
 // Library Imports
 import { Router } from 'express';
 // Project Imports
-import { postUser, getUsers, getProfilesByUserId, postProfileByUserId } from '../controllers/user.js';
+import { postUser, getUsers, getProfilesByUserId, postProfileByUserId, getUserById, lockProfile, unlockProfile, toggleActivateProfile, downgrade } from '../controllers/user.js';
 import { check, param } from 'express-validator';
 import { validateFields } from '../middlewares/request-validator.js';
 import { validarJWT } from '../middlewares/validar-jwt.js';
@@ -9,7 +9,7 @@ import { validateEmailUnique, validateUserUnique, validateUserExists, validateMa
 
 const router = Router();    // Create the router
 
-router.get('/', [validarJWT],getUsers);  // Retreive a list of all users
+router.get('/', [validarJWT], getUsers);  // Retreive a list of all users
 router.post(
     '/',
     [
@@ -26,8 +26,15 @@ router.post(
     ],
     postUser
 );    // Create an user
+
+router.get('/:userCode', [
+    param('userCode', 'El userCode debe ser un numero').isNumeric(),
+    param('userCode').custom(validateUserExists),
+    validateFields,
+    // validarJWT
+], getUserById)
 router.get(
-    '/:userCode/profiles', [validarJWT] ,[
+    '/:userCode/profiles', [validarJWT], [
     param('userCode', 'El userCode debe ser un numero').isNumeric(),
     param('userCode').custom(validateUserExists),
     validateFields
@@ -35,7 +42,7 @@ router.get(
     getProfilesByUserId)    // Get user profiles
 
 router.post(
-    '/:userCode/profiles', [validarJWT] , [
+    '/:userCode/profiles', [validarJWT], [
     param('userCode', 'El userCode debe ser un numero').isNumeric(),
     param('userCode').custom(validateUserExists),
     param('userCode').custom(validateMaxProfiles),
@@ -43,8 +50,44 @@ router.post(
     validateFields
 ],
     postProfileByUserId
-)
+);
 
+router.get(
+    '/lock/:profileCode', [
+    validarJWT,
+    check('profileCode', 'El profileCode es requerido').isNumeric(),
+    validateFields
+],
+    lockProfile
+);
+
+
+router.get(
+    '/unlock/:profileCode', [
+    validarJWT,
+    check('profileCode', 'El profileCode es requerido').isNumeric(),
+    validateFields
+],
+    unlockProfile
+);
+
+router.post(
+    '/toggle/activation/:profileCode', [
+        validarJWT,
+        check('profileCode', 'El profileCode es requerido').isNumeric(),
+        validateFields
+    ],
+    toggleActivateProfile
+);
+
+
+router.post(
+    '/downgrade/:userCode', [
+        check('userCode', 'El userCode es requerido').isNumeric(),
+        validateFields
+    ],
+    downgrade
+);
 
 
 export default router;

@@ -37,7 +37,7 @@ export const getUser = async (userCode) => {
     delete users[0].password
 
 
-    const { userCode: code, user, email, name, lastName, active, plan, profileCount } = users[0];
+    const { userCode: code, user, email, name, lastName, active, plan, profileCount, adFrequency } = users[0];
 
     const userObject = {
         userCode: code,
@@ -48,7 +48,8 @@ export const getUser = async (userCode) => {
         active,
         plan: {
             plan,
-            profileCount
+            profileCount,
+            adFrequency
         }
     }
 
@@ -107,7 +108,7 @@ export const authUser = async (email, password) => {
  * @param {string} userCode 
  * @returns user
  */
- export const authUserWithToken = async (userCode) => {
+export const authUserWithToken = async (userCode) => {
     const user = await DatabaseManager.knex('users').select('*').where({ userCode });    // Get the user
     if (user.length != 1) return null; // Check for user not found
     delete user[0].password;
@@ -166,4 +167,39 @@ export const getUserProfiles = async (userCode) => {
 export const checkProfile = async (profileCode) => {
     const profiles = await DatabaseManager.knex('profiles').select('*').where({ profileCode });
     return profiles;
+}
+
+
+export const updateLockState = async (profileCode, locked) => {
+    const updated = await DatabaseManager.knex('profiles').update({ signedIn: locked }).where({ profileCode });
+    return updated;
+}
+
+export const toggleActivationProfile = async (profileCode) => {
+    const now = await DatabaseManager.knex('profiles').select('active').where({ profileCode });
+    await DatabaseManager.knex('profiles').update('active',!now[0].active).where({ profileCode });
+}
+
+export const downgradeUser = async (userCode) => {
+    const types = {
+        'advanced':2,
+        'standard':1,
+        'basic':0}
+    const now = await DatabaseManager.knex('users').select('plan').where({userCode});
+    const value = types[now[0].plan]
+    if (value >0) {
+        const name = Object.keys(types)[value-1];
+        await DatabaseManager.knex('users').update('plan',name).where({userCode});
+        const profiles = await DatabaseManager.knex('profiles').where({userCode, active:true});
+        const profileCountByPlan = await DatabaseManager.knex('plans').select('profileCount').where({name});
+        const profilesCodeToBeDeactivatedFormat = await DatabaseManager.knex('profiles').select('profileCode').where({userCode, active:true}).limit(Object.keys(profiles).length-(profileCountByPlan)[0].profileCount);
+        const profilesCodeToBeDeactivated = profilesCodeToBeDeactivatedFormat.map(value => {return parseInt(value.profileCode)})
+        
+        if (Object.keys(profiles).length > (profileCountByPlan)[0].profileCount) {
+            await DatabaseManager.knex('profiles').update('active',false).where({userCode}).whereIn('profileCode',profilesCodeToBeDeactivated);
+            return true
+        }
+    }
+
+    return undefined;
 }
