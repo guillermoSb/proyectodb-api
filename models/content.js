@@ -199,6 +199,14 @@ export const unmarkFavoriteSeries = async (seriesCode, profileCode) => {
 }
 
 /**
+ * Remove movie
+ * @param {*} movieCode 
+ */
+export const removeMovie = async (movieCode) => {
+    await DatabaseManager.knex('movies').delete().where({ movieCode });
+}
+
+/**
  * Unmark a movie from the favorites
  * @param {number} movieCode 
  * @param {number} profileCode 
@@ -704,4 +712,27 @@ export const fetchFeaturedSeries = async (profileCode) => {
     }
     const series = await DatabaseManager.knex('series').select('*').whereIn('seriesCode', seriesCodes).limit(10)
     return series;
+}
+
+
+/**
+ * Insert a movie on the db
+ * @param {*} movie 
+ * @returns 
+ */
+export const insertMovie = async (movie) => {
+    const newMovie = await DatabaseManager.knex('movies').insert(movie);
+    return newMovie;
+}
+
+
+/**
+ * Updates a movie on the db.
+ * @param {*} movieCode 
+ * @param {*} values 
+ * @returns 
+ */
+export const updateMovie = async (movieCode, values) => {
+    const updatedMovie = await DatabaseManager.knex('movies').update(values).where({ movieCode });
+    return updatedMovie
 }

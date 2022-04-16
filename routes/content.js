@@ -10,6 +10,7 @@ import {
     getSeriesByCode,
     getContentBySearch,
     getMoviesByCode,
+    deleteMovie,
     removeFavoriteMovie,
     getMovieByCode,
     markMovieAsFinished,
@@ -21,7 +22,10 @@ import {
     markMovieAsStarted,
     getInProgressMovies,
     getFeaturedMovies,
-    getFeaturedSeries
+    getFeaturedSeries,
+    getAllMoviesWithoutGenre,
+    createMovie,
+    modifyMovie
 } from '../controllers/content.js';
 import { validateFields } from '../middlewares/request-validator.js';
 //import { getAllGenres } from '../models/content.js';
@@ -32,6 +36,50 @@ import {
 const router = Router();
 
 router.get('/movies', getMovies);
+
+router.post(
+    '/movies',
+    [
+        check('genre').custom(validateGenreExists),
+        check('categories').notEmpty().custom(validateCategoryExists),
+        check('studioCode').notEmpty().custom(validStudioCode),
+        check('directorCode').custom(validDirectorCode),
+        check('duration', 'La duracion es requerida.').notEmpty().isNumeric(),
+        check('title', 'El titulo es requerido.').notEmpty(),
+        check('coverUrl', 'El cover es requerido.').notEmpty().isURL(),
+        check('url', 'El url es requerido.').notEmpty(),
+        check('publishedAt', 'La fecha es requerida').notEmpty(),
+        check('rating').notEmpty().isFloat({ min: 0, max: 5 }),
+        validateFields
+    ],
+    createMovie
+);
+
+router.put('/movies/:movieCode',
+    [
+        check('genre').custom(validateGenreExists),
+        check('categories').notEmpty().custom(validateCategoryExists),
+        check('studioCode').notEmpty().custom(validStudioCode),
+        check('directorCode').custom(validDirectorCode),
+        check('duration', 'La duracion es requerida.').notEmpty().isNumeric(),
+        check('title', 'El titulo es requerido.').notEmpty(),
+        check('coverUrl', 'El cover es requerido.').notEmpty().isURL(),
+        check('url', 'El url es requerido.').notEmpty(),
+        check('publishedAt', 'La fecha es requerida').notEmpty(),
+        check('rating').notEmpty().isFloat({ min: 0, max: 5 }),
+        validateFields
+    ],
+    modifyMovie
+)
+
+router.delete('/movies/:movieCode',
+    [
+        check('movieCode', 'El codigo de la pelicula debe ser un número').isNumeric().notEmpty(),
+        validateFields
+    ],
+    deleteMovie
+)
+router.get('/movies/all', getAllMoviesWithoutGenre);
 
 router.get('/movies/:genre',
     [
@@ -75,6 +123,8 @@ router.post('/series', [
     check('episodeCount', 'El número de episodios es requerido').isInt({ min: 1 }),
     check('publishedAt', 'La fecha es requerida').notEmpty(),
     check('rating').notEmpty().isFloat({ min: 0, max: 5 }),
+    check('coverUrl', 'El cover es requerido.').notEmpty().isURL(),
+    check('url', 'El url es requerido.').notEmpty(),
     check('seasonCount').isInt({ min: 1 }),
     validateFields
 ], postSeries); // Post a series
