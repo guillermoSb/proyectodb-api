@@ -1,8 +1,8 @@
 import { DatabaseManager } from '../database/manager.js';
 import {
     getAllFavoriteMovies, removeMovie, getAllMoviesByGenre, getAllMovies, addNewFavoriteMovie, checkMovie, createSeries, getAllSeries, getAllSeriesByGenre, markFavoriteSeries, unmarkFavoriteSeries, getAllFavoriteSeries, getSeriesById, unmarkFavoriteMovie, getMovieById, createMovieFinishedActivity, fetchFinishedMovies, createEpisodeFinishedActivity, fetchFinishedSeries, createEpisodeStartedActivity, createMovieStartedActivity,
-    fetchStartedMovies, fetchStartedSeries, searchContent,
-    deleteFavoriteMovie, fetchFeaturedMovies, fetchFeaturedSeries, insertMovie, updateMovie
+    fetchStartedMovies, fetchStartedSeries, searchContent, removeEpisode,
+    deleteFavoriteMovie, createEpisode, fetchFeaturedMovies, updateSeries, fetchFeaturedSeries, insertMovie, updateMovie, removeSeries
 } from '../models/content.js';
 import { checkProfile } from '../models/user.js';
 
@@ -31,6 +31,54 @@ export const getAllMoviesWithoutGenre = async (req, res) => {
     }
 }
 
+/**
+ * Create an episode
+ * @param {*} req 
+ * @param {*} res 
+ */
+export const postEpisode = async (req, res) => {
+    const { seriesCode } = req.params;
+    const data = req.body;
+    try {
+        await createEpisode(seriesCode, data);  // Create an episode
+        return res.status(200).send({
+            ok: true
+        })
+    } catch (error) {
+        return res.status(500).send({
+            ok: false,
+            errors: [
+                'No se pudo ingresar el episodio.'
+            ]
+        })
+    }
+}
+
+/**
+ * Get all series without a genre
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
+export const getAllSeriesWithoutGenre = async (req, res) => {
+    try {
+        const series = await getAllSeries();
+        res.status(200).send({
+            ok: true,
+            series
+        });
+    } catch (error) {
+        return res.status(500).send(
+            {
+                ok: false,
+                errors: [
+                    'Error al obtener series.'
+                ]
+            }
+        );
+    }
+}
+
 
 /**
  * Modify a movie
@@ -52,6 +100,32 @@ export const modifyMovie = async (req, res) => {
                 ok: false,
                 errors: [
                     'Error al modificar película.'
+                ]
+            }
+        );
+    }
+}
+
+/**
+ * Modify a series
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
+export const modifySeries = async (req, res) => {
+    try {
+        const data = req.body;
+        const { seriesCode } = req.params;
+        await updateSeries(seriesCode, data);
+        res.status(200).send({
+            ok: true,
+        });
+    } catch (error) {
+        return res.status(500).send(
+            {
+                ok: false,
+                errors: [
+                    'Error al modificar serie.'
                 ]
             }
         );
@@ -103,6 +177,29 @@ export const deleteMovie = async (req, res) => {
                 ]
             }
         );
+    }
+}
+
+/**
+ * Delete series
+ * @param {*} req 
+ * @param {*} res 
+ */
+export const deleteSeries = async (req, res) => {
+    const { seriesCode } = req.params;
+    try {
+        await removeSeries(seriesCode);
+        return res.status(200).send({
+            ok: true
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({
+            ok: false,
+            error: [
+                'Error al eliminar la serie'
+            ]
+        })
     }
 }
 
@@ -890,6 +987,29 @@ export const getFeaturedSeries = async (req, res) => {
             ok: false,
             errors: [
                 'No se pudo obtener el contenido recomendado.'
+            ]
+        })
+    }
+}
+
+/**
+ * Remove episode
+ * @param {*} req 
+ * @param {*} res 
+ */
+export const deleteEpisode = async (req, res) => {
+    const { episodeCode } = req.params;
+    try {
+        await removeEpisode(episodeCode);
+        return res.status(200).send({
+            ok: true,
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({
+            ok: false,
+            errors: [
+                'No se pudo eliminar el episodio.'
             ]
         })
     }

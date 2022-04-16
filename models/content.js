@@ -25,6 +25,10 @@ export const getAllMoviesByGenre = async (genre) => {
 
 }
 
+/**
+ * Get all movies from the database
+ * @returns 
+ */
 export const getAllMovies = async () => {
 
     const movies = await DatabaseManager.knex('movies').select('*');
@@ -40,6 +44,16 @@ export const getAllGenres = async () => {
     const genres = (await DatabaseManager.knex('genres').select('*')).map((genre) => genre.name);
     return genres;
 
+}
+
+/**
+ * Inserts an episode on the database
+ * @param {*} seriesCode 
+ * @param {*} data 
+ */
+export const createEpisode = async (seriesCode, data) => {
+    data.seriesCode = seriesCode;
+    await DatabaseManager.knex('episodes').insert(data);
 }
 
 
@@ -204,6 +218,15 @@ export const unmarkFavoriteSeries = async (seriesCode, profileCode) => {
  */
 export const removeMovie = async (movieCode) => {
     await DatabaseManager.knex('movies').delete().where({ movieCode });
+}
+/**
+ * Remove series
+ * @param {*} movieCode 
+ */
+export const removeSeries = async (seriesCode) => {
+
+    await DatabaseManager.knex('episodes').delete().where({ seriesCode });
+    await DatabaseManager.knex('series').delete().where({ seriesCode });
 }
 
 /**
@@ -735,4 +758,22 @@ export const insertMovie = async (movie) => {
 export const updateMovie = async (movieCode, values) => {
     const updatedMovie = await DatabaseManager.knex('movies').update(values).where({ movieCode });
     return updatedMovie
+}
+/**
+ * Updates a series on the db.
+ * @param {*} seriesCode 
+ * @param {*} values 
+ * @returns 
+ */
+export const updateSeries = async (seriesCode, values) => {
+    const updatedMovie = await DatabaseManager.knex('series').update(values).where({ seriesCode });
+    return updatedMovie
+}
+
+/**
+ * Removes an episode from the db
+ * @param {*} episodeCode 
+ */
+export const removeEpisode = async (episodeCode) => {
+    await DatabaseManager.knex('episodes').delete().where({ episodeCode });
 }
