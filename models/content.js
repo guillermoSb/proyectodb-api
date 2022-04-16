@@ -248,6 +248,18 @@ export const getSeriesById = async (seriesCode) => {
         });
         series[0]['episodes'] = episodes;
         series[0]['studio'] = studio[0];
+
+        const actors = await DatabaseManager.knex('casting_series').select('name','lastName').where({seriesCode})
+        .innerJoin('actors', 'casting_series.actorCode', 'actors.actorCode');
+        series[0]['actors'] = actors;
+
+        const director = await DatabaseManager.knex('directors').select('name', 'lastName').where('directorCode', series[0].directorCode);
+        series[0]['director']= director[0];
+
+        const awards = await DatabaseManager.knex('award_series').select('award.name').where({seriesCode})
+        .innerJoin('award','award_series.awardCode','award.awardCode');
+
+        series[0]['awards'] = awards;
         return series[0];
     } else { return null; }
 }
@@ -384,13 +396,27 @@ export const searchContent = async (value) => {
 */
 export const getMovieById = async (movieCode) => {
     const movie = await DatabaseManager
-        .knex('movies').select('*').where({ movieCode });
+        .knex('movies').select('*').where({ movieCode })
+        .innerJoin('directors', 'movies.directorCode', 'directors.directorCode')
+
 
     if (movie.length !== 0) {
         const studio = await DatabaseManager.knex('studios').select('name').where({
             studioCode: movie[0].studioCode
         });
         movie[0]['studio'] = studio[0];
+
+        const actors = await DatabaseManager.knex('casting_movies').select('name','lastName').where({movieCode})
+        .innerJoin('actors', 'casting_movies.actorCode', 'actors.actorCode');
+        movie[0]['actors'] = actors;
+
+        const director = await DatabaseManager.knex('directors').select('name', 'lastName').where('directorCode', movie[0].directorCode);
+        movie[0]['director']= director[0];
+
+        const awards = await DatabaseManager.knex('award_movies').select('award.name').where({movieCode})
+        .innerJoin('award','award_movies.awardCode','award.awardCode');
+
+        movie[0]['awards'] = awards;
         return movie[0];
     } else { return null; }
 }
