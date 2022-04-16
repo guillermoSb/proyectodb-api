@@ -302,11 +302,19 @@ const searchMovies = async (value, dataLabels) => {
         .innerJoin('directors', 'movies.directorCode', 'directors.directorCode')
         .innerJoin('studios', 'movies.studioCode', 'studios.studioCode');
 
+   const moviesByAward = await DatabaseManager
+        .knex('movies').select(dataLabels)
+        .innerJoin('award_movies','award_movies.movieCode','movies.movieCode')
+        .innerJoin('award','award_movies.awardCode','award.awardCode')
+        .whereILike('award.name','%' + value + '%')
+        .innerJoin('directors', 'movies.directorCode', 'directors.directorCode')
+        .innerJoin('studios', 'movies.studioCode', 'studios.studioCode');
+
     /* const moviesByDate = await DatabaseManager
     .knex('movies').select(dataLabels).innerJoin('studios', 'movies.studioCode','studios.studioCode')
     .whereILike( 'publishedAt', '%'+value+'%').innerJoin('directors', 'movies.directorCode','directors.directorCode');
  */
-    const movies = moviesByName.concat(moviesByGenre, moviesByCategory, moviesByDirector, moviesByStudio, moviesByActor);
+    const movies = moviesByName.concat(moviesByGenre, moviesByCategory, moviesByDirector, moviesByStudio, moviesByActor,moviesByAward);
 
     const cleanData = movies.filter((value, index) => {
         const _value = JSON.stringify(value);
@@ -357,11 +365,22 @@ const searchSeries = async (value, dataLabels) => {
         .whereILike('actors.name', '%' + value + '%').orWhereILike('actors.lastName', '%' + value + '%')
         .innerJoin('directors', 'series.directorCode', 'directors.directorCode')
         .innerJoin('studios', 'series.studioCode', 'studios.studioCode');
+
+    const seriesByAward = await DatabaseManager
+        .knex('series').select(dataLabels)
+        .innerJoin('award_series','award_series.seriesCode','series.seriesCode')
+        .innerJoin('award','award_series.awardCode','award.awardCode')
+        .whereILike('award.name','%' + value + '%')
+        .innerJoin('directors', 'series.directorCode', 'directors.directorCode')
+        .innerJoin('studios', 'series.studioCode', 'studios.studioCode');
+
+
+    
     /* const seriesByDate = await DatabaseManager
     .knex('series').select(dataLabels).innerJoin('studios', 'series.studioCode','studios.studioCode')
     .whereILike( 'publishedAt', '%'+value+'%').innerJoin('directors', 'series.directorCode','directors.directorCode');
  */
-    const series = seiresByName.concat(seriesByGenre, seriesByCategory, seriesByDirector, seriessByStudio, seriesByActor);
+    const series = seiresByName.concat(seriesByGenre, seriesByCategory, seriesByDirector, seriessByStudio, seriesByActor,seriesByAward);
 
     const cleanData = series.filter((value, index) => {
         const _value = JSON.stringify(value);
