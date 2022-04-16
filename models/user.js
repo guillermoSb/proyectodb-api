@@ -197,6 +197,7 @@ export const downgradeUser = async (userCode) => {
         
         if (Object.keys(profiles).length > (profileCountByPlan)[0].profileCount) {
             await DatabaseManager.knex('profiles').update('active',false).where({userCode}).whereIn('profileCode',profilesCodeToBeDeactivated);
+            return true
         }
     }
 
