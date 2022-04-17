@@ -95,6 +95,7 @@ export const modifyMovie = async (req, res) => {
             ok: true,
         });
     } catch (error) {
+        console.log(error);
         return res.status(500).send(
             {
                 ok: false,
@@ -121,6 +122,7 @@ export const modifySeries = async (req, res) => {
             ok: true,
         });
     } catch (error) {
+        console.log(error)
         return res.status(500).send(
             {
                 ok: false,
@@ -488,6 +490,7 @@ export const postSeries = async (req, res) => {
         })
 
     } catch (error) {
+        console.log(error)
         return res.status(500).send(
             {
                 ok: false,

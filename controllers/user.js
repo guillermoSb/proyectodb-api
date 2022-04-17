@@ -215,15 +215,15 @@ export const unlockProfile = async (req, res) => {
  * @param {*} req 
  * @param {*} res 
  */
-export const toggleActivateProfile = async (req,res) => {
-    const {profileCode} = req.params;
+export const toggleActivateProfile = async (req, res) => {
+    const { profileCode } = req.params;
 
     try {
         await toggleActivationProfile(profileCode)
         return res.status(200).send({
             ok: true
         });
-        
+
     } catch (error) {
         return res.status(500).send(
             {
@@ -241,8 +241,8 @@ export const toggleActivateProfile = async (req,res) => {
  * @param {*} req 
  * @param {*} res 
  */
-export const downgrade = async (req,res) => {
-    const {userCode} = req.params;
+export const downgrade = async (req, res) => {
+    const { userCode } = req.params;
 
     try {
 
@@ -253,6 +253,7 @@ export const downgrade = async (req,res) => {
                 ok: true
             });
         } else {
+            console.log('error!!')
             return res.status(500).send(
                 {
                     ok: false,
@@ -262,8 +263,9 @@ export const downgrade = async (req,res) => {
                 }
             );
         }
-        
+
     } catch (error) {
+        console.log(error);
         return res.status(500).send(
             {
                 ok: false,
