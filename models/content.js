@@ -273,22 +273,22 @@ export const getSeriesById = async (seriesCode) => {
 
 
     if (series.length !== 0) {
-        const episodes = await DatabaseManager.knex('episodes').select('name', 'season', 'datePublished', 'url', 'episodeCode').where({ seriesCode });
+        const episodes = await DatabaseManager.knex('episodes').select('name', 'season', 'datePublished', 'url', 'episodeCode', 'duration').where({ seriesCode });
         const studio = await DatabaseManager.knex('studios').select('name').where({
             studioCode: series[0].studioCode
         });
         series[0]['episodes'] = episodes;
         series[0]['studio'] = studio[0];
 
-        const actors = await DatabaseManager.knex('casting_series').select('name','lastName').where({seriesCode})
-        .innerJoin('actors', 'casting_series.actorCode', 'actors.actorCode');
+        const actors = await DatabaseManager.knex('casting_series').select('name', 'lastName').where({ seriesCode })
+            .innerJoin('actors', 'casting_series.actorCode', 'actors.actorCode');
         series[0]['actors'] = actors;
 
         const director = await DatabaseManager.knex('directors').select('name', 'lastName').where('directorCode', series[0].directorCode);
-        series[0]['director']= director[0];
+        series[0]['director'] = director[0];
 
-        const awards = await DatabaseManager.knex('award_series').select('award.name').where({seriesCode})
-        .innerJoin('award','award_series.awardCode','award.awardCode');
+        const awards = await DatabaseManager.knex('award_series').select('award.name').where({ seriesCode })
+            .innerJoin('award', 'award_series.awardCode', 'award.awardCode');
 
         series[0]['awards'] = awards;
         return series[0];
@@ -333,11 +333,11 @@ const searchMovies = async (value, dataLabels) => {
         .innerJoin('directors', 'movies.directorCode', 'directors.directorCode')
         .innerJoin('studios', 'movies.studioCode', 'studios.studioCode');
 
-   const moviesByAward = await DatabaseManager
+    const moviesByAward = await DatabaseManager
         .knex('movies').select(dataLabels)
-        .innerJoin('award_movies','award_movies.movieCode','movies.movieCode')
-        .innerJoin('award','award_movies.awardCode','award.awardCode')
-        .whereILike('award.name','%' + value + '%')
+        .innerJoin('award_movies', 'award_movies.movieCode', 'movies.movieCode')
+        .innerJoin('award', 'award_movies.awardCode', 'award.awardCode')
+        .whereILike('award.name', '%' + value + '%')
         .innerJoin('directors', 'movies.directorCode', 'directors.directorCode')
         .innerJoin('studios', 'movies.studioCode', 'studios.studioCode');
 
@@ -345,7 +345,7 @@ const searchMovies = async (value, dataLabels) => {
     .knex('movies').select(dataLabels).innerJoin('studios', 'movies.studioCode','studios.studioCode')
     .whereILike( 'publishedAt', '%'+value+'%').innerJoin('directors', 'movies.directorCode','directors.directorCode');
  */
-    const movies = moviesByName.concat(moviesByGenre, moviesByCategory, moviesByDirector, moviesByStudio, moviesByActor,moviesByAward);
+    const movies = moviesByName.concat(moviesByGenre, moviesByCategory, moviesByDirector, moviesByStudio, moviesByActor, moviesByAward);
 
     const cleanData = movies.filter((value, index) => {
         const _value = JSON.stringify(value);
@@ -399,19 +399,19 @@ const searchSeries = async (value, dataLabels) => {
 
     const seriesByAward = await DatabaseManager
         .knex('series').select(dataLabels)
-        .innerJoin('award_series','award_series.seriesCode','series.seriesCode')
-        .innerJoin('award','award_series.awardCode','award.awardCode')
-        .whereILike('award.name','%' + value + '%')
+        .innerJoin('award_series', 'award_series.seriesCode', 'series.seriesCode')
+        .innerJoin('award', 'award_series.awardCode', 'award.awardCode')
+        .whereILike('award.name', '%' + value + '%')
         .innerJoin('directors', 'series.directorCode', 'directors.directorCode')
         .innerJoin('studios', 'series.studioCode', 'studios.studioCode');
 
 
-    
+
     /* const seriesByDate = await DatabaseManager
     .knex('series').select(dataLabels).innerJoin('studios', 'series.studioCode','studios.studioCode')
     .whereILike( 'publishedAt', '%'+value+'%').innerJoin('directors', 'series.directorCode','directors.directorCode');
  */
-    const series = seiresByName.concat(seriesByGenre, seriesByCategory, seriesByDirector, seriessByStudio, seriesByActor,seriesByAward);
+    const series = seiresByName.concat(seriesByGenre, seriesByCategory, seriesByDirector, seriessByStudio, seriesByActor, seriesByAward);
 
     const cleanData = series.filter((value, index) => {
         const _value = JSON.stringify(value);
@@ -456,15 +456,15 @@ export const getMovieById = async (movieCode) => {
         });
         movie[0]['studio'] = studio[0];
 
-        const actors = await DatabaseManager.knex('casting_movies').select('name','lastName').where({movieCode})
-        .innerJoin('actors', 'casting_movies.actorCode', 'actors.actorCode');
+        const actors = await DatabaseManager.knex('casting_movies').select('name', 'lastName').where({ movieCode })
+            .innerJoin('actors', 'casting_movies.actorCode', 'actors.actorCode');
         movie[0]['actors'] = actors;
 
         const director = await DatabaseManager.knex('directors').select('name', 'lastName').where('directorCode', movie[0].directorCode);
-        movie[0]['director']= director[0];
+        movie[0]['director'] = director[0];
 
-        const awards = await DatabaseManager.knex('award_movies').select('award.name').where({movieCode})
-        .innerJoin('award','award_movies.awardCode','award.awardCode');
+        const awards = await DatabaseManager.knex('award_movies').select('award.name').where({ movieCode })
+            .innerJoin('award', 'award_movies.awardCode', 'award.awardCode');
 
         movie[0]['awards'] = awards;
         return movie[0];
