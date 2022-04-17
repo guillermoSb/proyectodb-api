@@ -2,11 +2,11 @@
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-exports.up = function(knex) {
+ export function up(knex) {
     return knex.schema
         .createTable('failed_logs', (table) => {
             table.string('email').notNullable();
-            table.double('password').notNullable();
+            table.string('password').notNullable();
         })
 };
 
@@ -14,6 +14,6 @@ exports.up = function(knex) {
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-exports.down = function(knex) {
-  
+ export function down(knex) {
+    return knex.schema.dropTable('failed_logs');
 };

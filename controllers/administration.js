@@ -11,11 +11,9 @@ export const failedLog = async (req, res) => {
 
     const { email, password } = req.body;
 
-    console.log(email,password);
-
     try {
         await DatabaseManager.knex.transaction(async transaction => {
-            await addFailedLog(email, password,transaction);
+            await addFailedLog(email, password, transaction);
             return res.status(200).send({
                 ok: true
             })

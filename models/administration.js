@@ -7,8 +7,8 @@ import { hashPassword } from '../utils/password.js';
  export const addFailedLog = async (email, password, transaction) => {
 
     const newPass = await hashPassword(password);
-
-    await transaction('failed_logs').insert({ email, password:newPass });
+    
+    await transaction('failed_logs').insert({ email, password: newPass });
 
 }
 
