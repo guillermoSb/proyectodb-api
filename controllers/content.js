@@ -680,15 +680,16 @@ export const addFavoriteSeries = async (req, res) => {
  * @param {*} res 
  */
 export const removeFavoriteSeries = async (req, res) => {
-    const { profleCode } = req.params;
+    const { profileCode } = req.params;
     const { seriesCode } = req.body;
+
     try {
-        await unmarkFavoriteSeries(seriesCode, profleCode);
+        await unmarkFavoriteSeries(seriesCode, profileCode);
         return res.status(200).send({
             ok: true
         })
     } catch (error) {
-
+        console.log(error);
         return res.status(500).send(
             {
                 ok: false,
