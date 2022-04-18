@@ -6,6 +6,7 @@ import authRoutes from '../routes/auth.js';
 import contentRoutes from '../routes/content.js';
 import adminRoutes from '../routes/administration.js';
 import adsRoutes from '../routes/ads.js'
+import reportsRoutes from '../routes/reports.js'
 
 export class Server {
 
@@ -15,7 +16,8 @@ export class Server {
         auth: '/api/auth',
         content: '/api/content',
         admin: '/api/admin',
-        ads: '/api/ads'
+        ads: '/api/ads',
+        reports: '/api/reports',
     }
 
     constructor() {
@@ -57,7 +59,8 @@ export class Server {
         this.app.use(this.paths.users, userRoutes); // userRoutes
         this.app.use(this.paths.auth, authRoutes); // userRoutes
         this.app.use(this.paths.content, contentRoutes); //ContentRoutes
-        this.app.use(this.paths.admin,adminRoutes);
+        this.app.use(this.paths.admin, adminRoutes);
         this.app.use(this.paths.ads, adsRoutes); //ContentRoutes
+        this.app.use(this.paths.reports, reportsRoutes); //ContentRoutes
     }
 }
