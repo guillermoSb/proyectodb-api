@@ -38,13 +38,13 @@ export const createUser = async (plan, role, user, email, password, name, lastNa
  * @param {string} active 
  * @param {import("knex").Knex} transaction
  */
- export const updateUser = async (plan, role, user, email, name, lastName, active, userCode) => {
-    
+export const updateUser = async (plan, role, user, email, name, lastName, active, userCode) => {
+
     const userObject = {
-        user,role, email, name, lastName, active, plan
+        user, role, email, name, lastName, active, plan
     }
 
-    const dbUser = await DatabaseManager.knex('users').update(userObject, ['plan','role','name','user','email','lastName','active']).where({userCode});    // Create the user on the db
+    const dbUser = await DatabaseManager.knex('users').update(userObject, ['plan', 'role', 'name', 'user', 'email', 'lastName', 'active']).where({ userCode });    // Create the user on the db
     delete dbUser[0].password; // Do not return the password
     return dbUser[0];  // Return the created user
 
@@ -180,7 +180,7 @@ export const checkForExistingProfile = async (where) => {
  * @param {*} userCode 
  */
 export const getUserProfiles = async (userCode) => {
-    const profiles = await DatabaseManager.knex('profiles').select('*').where({ userCode });
+    const profiles = await DatabaseManager.knex('profiles').select('*').where({ userCode, active: true });
     return profiles;
 }
 
@@ -230,7 +230,7 @@ export const downgradeUser = async (userCode) => {
     return undefined;
 }
 
-export const deleteUser = async(userCode) => {
+export const deleteUser = async (userCode) => {
 
-    await DatabaseManager.knex('users').delete('*').where({userCode});
+    await DatabaseManager.knex('users').delete('*').where({ userCode });
 }
