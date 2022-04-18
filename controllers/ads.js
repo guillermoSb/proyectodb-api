@@ -86,6 +86,7 @@ export const getAdvertiserAds = async (req, res) => {
             ads
         });
     } catch (error) {
+        console.log(error);
         return res.status(500).send({
             ok: false,
             errors: [
