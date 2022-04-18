@@ -671,7 +671,7 @@ export const fetchFeaturedMovies = async (profileCode) => {
         .where({ profileCode })
         .groupBy('genre')
         .orderBy('count', 'desc')
-        .limit(1)).map(res => res.genre);
+        .limit(5)).map(res => res.genre);
     // director
     const mostViewedDirector = (await DatabaseManager
         .knex('userMovieActivities')
@@ -732,7 +732,8 @@ export const fetchFeaturedSeries = async (profileCode) => {
         .where({ profileCode })
         .groupBy('genre')
         .orderBy('count', 'desc')
-        .limit(1)).map(res => res.genre);
+        .limit(5)).map(res => res.genre);
+
 
     // director
     const mostViewedDirector = (await DatabaseManager
