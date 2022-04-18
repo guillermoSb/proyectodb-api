@@ -316,10 +316,9 @@ export const updateUserByCode = async (req,res) => {
         role,
         user,
         email,
-        password,
         name,
         lastName,
-        active
+        active,
     } = req.body;
 
     const { userCode } =req.params;
@@ -329,7 +328,7 @@ export const updateUserByCode = async (req,res) => {
         // Run everything using a transaction
 
         // Call the database creation for user
-        let updatedUser = await updateUser(plan, role, user, email, password, name, lastName, active,userCode)
+        let updatedUser = await updateUser(plan, role, user, email, name, lastName, active,userCode)
 
         // Return the response
         return res.status(201).send(

@@ -9,7 +9,7 @@ import { validateEmailUnique, validateUserUnique, validateUserExists, validateMa
 
 const router = Router();    // Create the router
 
-router.get('/', [validarJWT], getUsers);  // Retreive a list of all users
+router.get('/'/*, [validarJWT]*/, getUsers);  // Retreive a list of all users
 router.post(
     '/',
     [
@@ -113,12 +113,10 @@ router.post(
         [
             check('email', 'El correo no es valido').isEmail(),
             check('user', 'El nombre de usuario es requerido').notEmpty(),
-            check('password', 'el nombre de usuario debe de tener al menos 6 caracteres.').isLength({ min: 6 }),
-            check('password', 'La contraseña es requerida.').notEmpty(),
-            check('password', 'La contraseña debe de tener al menos 6 caracteres.').isLength({ min: 6 }),
             check('plan', 'El plan es requerido.').notEmpty(),
             check('plan', 'Las opciones válidas para un plan son: basic, standard o advanced').isIn(['basic', 'standard', 'advanced']),
             check('email').notEmpty(),
+            check('role').notEmpty(),
             check('user').notEmpty(),
             param('userCode', 'El userCode debe ser un numero').isNumeric(),
             param('userCode' ).custom(validateUserExists),
