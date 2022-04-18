@@ -17,7 +17,7 @@ export const registerUser = async (req, res) => {
         password,
         name,
         lastName,
-        active
+        active,
     } = req.body;
 
     try {
@@ -71,7 +71,7 @@ export const loginUser = async (req, res) => {
             })
         }
 
-        const token = await generarJWT(loginUser[0].userCode);
+        const token = await generarJWT(loginUser[0].userCode, loginUser[0].role);
 
         return res.status(200).send(
             {

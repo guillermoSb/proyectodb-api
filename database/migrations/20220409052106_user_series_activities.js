@@ -7,7 +7,7 @@ export function up(knex) {
         .createTable('userSeriesActivities', (table) => {
             table.bigInteger('profileCode').references('profileCode').inTable('profiles').onDelete('CASCADE');
             table.bigInteger('episodeCode',).references('episodeCode').inTable('episodes').onDelete('CASCADE');
-            table.dateTime('startedAt');
+            table.dateTime('startedAt').defaultTo(knex.fn.now())
             table.datetime('endedAt');
             table.boolean('finished').defaultTo(false);
         });

@@ -16,7 +16,7 @@ import { checkPassword, hashPassword } from '../utils/password.js';
 export const createUser = async (plan, role, user, email, password, name, lastName, active, transaction) => {
     const newPass = await hashPassword(password);
     const userObject = {
-        user, email, password: newPass, name, lastName, active, plan
+        user, email, password: newPass, name, lastName, active, plan, role
     }
 
     const dbUser = await transaction('users').insert(userObject, ['*']);    // Create the user on the db
