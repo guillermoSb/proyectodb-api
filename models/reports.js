@@ -24,6 +24,38 @@ export const createReport1 = async (startDate, endDate) => {
     return report;
 }
 
+export const createReport2 = async (startDate, endDate) => {
+    const report = await DatabaseManager.knex.select('*').fromRaw(`
+    (
+        (
+            SELECT movies."categories" AS category, users."plan" AS plan, COUNT(*) AS views
+            FROM "userMovieActivities" AS us
+            INNER JOIN movies ON (us."movieCode" = movies."movieCode")
+            INNER JOIN profiles ON (us."profileCode" = profiles."profileCode")
+            INNER JOIN users ON (profiles."userCode" = users."userCode")
+            WHERE us."startedAt" >= ?
+            AND us."startedAt" <= ?
+            GROUP BY category,plan 
+        )
+        
+        UNION 
+        
+        (
+            SELECT series."categories" AS category, users."plan" AS plan, COUNT(*) AS views
+            FROM "userSeriesActivities" AS us
+            INNER JOIN episodes ON (us."episodeCode" = episodes."episodeCode")
+            INNER JOIN series ON (episodes."seriesCode" = series."seriesCode")
+            INNER JOIN profiles ON (us."profileCode" = profiles."profileCode")
+            INNER JOIN users ON (profiles."userCode" = users."userCode")
+            WHERE us."startedAt" >= ?
+            AND us."startedAt" <= ?
+            GROUP BY category,plan 
+        )
+    ) AS t
+    `, [startDate, endDate, startDate, endDate])
+    return report;
+}
+
 export const createReport3Director = async () => {
     const report = await DatabaseManager.knex.select('*').fromRaw(`
     (SELECT movies.director AS name,COUNT(movies."director") AS visitas

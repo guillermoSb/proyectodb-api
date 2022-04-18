@@ -1,4 +1,4 @@
-import { createReport1, createReport4, createReport5, createReport3Director, createReport3Actors } from '../models/reports.js';
+import { createReport1, createReport4, createReport5, createReport3Director, createReport3Actors, createReport2 } from '../models/reports.js';
 
 /**
  * Report 1
@@ -18,6 +18,39 @@ export const report1 = async (req, res) => {
         }
 
         const report = await createReport1(startDate, endDate);
+        return res.status(200).send({
+            ok: true,
+            report
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).send({
+            ok: false,
+            errors: [
+                'No se pudo obtener el reporte'
+            ]
+        })
+    }
+}
+
+/**
+ * Report 1
+ * @param {*} req 
+ * @param {*} res 
+ */
+ export const report2 = async (req, res) => {
+    const { startDate, endDate } = req.query;
+    try {
+        if ((new Date(startDate)) > (new Date(endDate))) {
+            return res.status(400).send({
+                ok: false,
+                errors: [
+                    'La fecha es menor'
+                ]
+            })
+        }
+
+        const report = await createReport2(startDate, endDate);
         return res.status(200).send({
             ok: true,
             report
