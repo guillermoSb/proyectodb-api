@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { check, param, query } from 'express-validator';
-import { report1, report4, report5 } from '../controllers/reports.js';
+import { report1, report4, report5, report3Director, report3Actors } from '../controllers/reports.js';
 
 import { validateFields } from '../middlewares/request-validator.js';
 
@@ -12,11 +12,25 @@ router.get('/1', [
     validateFields
 ], report1)
 
+
+router.get('/3/director', [
+    // param('startDate', 'La fecha inicial es requerida').notEmpty(),
+    // param('endDate', 'La fecha final es requerida').notEmpty(),
+    validateFields
+], report3Director)
+
+router.get('/3/actores', [
+    // param('startDate', 'La fecha inicial es requerida').notEmpty(),
+    // param('endDate', 'La fecha final es requerida').notEmpty(),
+    validateFields
+], report3Actors)
+
 router.get('/4', [
     // param('startDate', 'La fecha inicial es requerida').notEmpty(),
     // param('endDate', 'La fecha final es requerida').notEmpty(),
     validateFields
 ], report4)
+
 router.get('/5', [
     // param('startDate', 'La fecha inicial es requerida').notEmpty(),
     // param('endDate', 'La fecha final es requerida').notEmpty(),

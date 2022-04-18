@@ -24,6 +24,72 @@ export const createReport1 = async (startDate, endDate) => {
     return report;
 }
 
+export const createReport3Director = async () => {
+    const report = await DatabaseManager.knex.select('*').fromRaw(`
+    (SELECT movies.director AS name,COUNT(movies."director") AS visitas
+	FROM "userMovieActivities" AS us
+	INNER JOIN movies ON (us."movieCode" = movies."movieCode")
+	INNER JOIN profiles ON (us."profileCode" = profiles."profileCode")
+	INNER JOIN users ON (profiles."userCode" = users."userCode")
+	WHERE users.plan = 'advanced' OR users.plan = 'standard'
+	--LEFT JOIN casting_movies ON (casting_movies."movieCode" = us."movieCode")
+	GROUP BY movies.director
+
+	UNION
+	
+	SELECT series.director AS name,COUNT(series."director") AS visitas
+	FROM "userSeriesActivities" AS us
+	INNER JOIN episodes ON (us."episodeCode" = episodes."episodeCode")
+	INNER JOIN series ON (episodes."seriesCode" = series."seriesCode")
+	INNER JOIN profiles ON (us."profileCode" = profiles."profileCode")
+	INNER JOIN users ON (profiles."userCode" = users."userCode")
+	WHERE users.plan = 'advanced' OR users.plan = 'standard'
+	GROUP BY series.director
+	
+	ORDER BY visitas DESC
+	LIMIT 10) as t
+    `)
+    return report;
+}
+
+export const createReport3Actors = async () => {
+    const report = await DatabaseManager.knex.select('*').fromRaw(`
+    (SELECT *
+        FROM 
+        (
+            SELECT CONCAT(actors.name, ' ', actors."lastName" ) AS name, COUNT(actors.name) AS visitas
+            FROM "userMovieActivities" AS us
+            INNER JOIN movies ON (us."movieCode" = movies."movieCode")
+            INNER JOIN profiles ON (us."profileCode" = profiles."profileCode")
+            INNER JOIN users ON (profiles."userCode" = users."userCode")
+            LEFT JOIN casting_movies ON (casting_movies."movieCode" = us."movieCode")
+            INNER JOIN actors ON (casting_movies."actorCode" = actors."actorCode")
+            WHERE users.plan = 'advanced' OR users.plan = 'standard'
+            GROUP BY actors.name, actors."lastName"
+        ) AS actorsPeliculas
+    
+        UNION
+        
+        SELECT *
+        FROM (
+            SELECT CONCAT(actors.name, ' ', actors."lastName") AS name, COUNT(actors.name) AS visitas 
+            FROM "userSeriesActivities" AS us
+            INNER JOIN episodes ON (us."episodeCode" = episodes."episodeCode")
+            INNER JOIN series ON (episodes."seriesCode" = series."seriesCode")
+            INNER JOIN profiles ON (us."profileCode" = profiles."profileCode")
+            INNER JOIN users ON (profiles."userCode" = users."userCode")
+            LEFT JOIN casting_series ON (casting_series."seriesCode" = series."seriesCode")
+            INNER JOIN actors ON (casting_series."actorCode" = actors."actorCode")
+            WHERE users.plan = 'advanced' OR users.plan = 'standard'
+            GROUP BY actors.name, actors."lastName"
+        ) AS actors
+        
+        ORDER BY visitas DESC
+        LIMIT 10) as t
+    `)
+    return report;
+}
+
 export const createReport4 = async () => {
     const report = await DatabaseManager.knex.select('*').fromRaw(`
     (SELECT    count(*)
@@ -61,3 +127,4 @@ ORDER BY t DESC) AS t
     `, [start, end, start, end])
     return report;
 }
+
