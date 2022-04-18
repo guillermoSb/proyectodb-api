@@ -25,6 +25,34 @@ export const createUser = async (plan, role, user, email, password, name, lastNa
 
 }
 
+
+/**
+ * Create a new user on the database
+ * @param {string} plan
+ * @param {string} role 
+ * @param {string} user 
+ * @param {string} email 
+ * @param {string} password 
+ * @param {string} name 
+ * @param {string} lastName 
+ * @param {string} active 
+ * @param {import("knex").Knex} transaction
+ */
+ export const updateUser = async (plan, role, user, email, password, name, lastName, active, userCode) => {
+     const newPass = await hashPassword(password);
+    
+    const userObject = {
+        user, email, password: newPass, name, lastName, active, plan, userCode
+    }
+
+    console.log(userObject);
+
+    const dbUser = await DatabaseManager.knex('users').update(userObject, ['*']).where({userCode});    // Create the user on the db
+    delete dbUser[0].password; // Do not return the password
+    return dbUser[0];  // Return the created user
+
+}
+
 /**
  * Get the plan of this user
  * @param {string} userCode 
@@ -203,4 +231,9 @@ export const downgradeUser = async (userCode) => {
     }
 
     return undefined;
+}
+
+export const deleteUser = async(userCode) => {
+
+    await DatabaseManager.knex('users').delete('*').where({userCode});
 }

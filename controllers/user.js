@@ -1,5 +1,5 @@
 import { DatabaseManager } from '../database/manager.js';
-import { createProfile, createUser, downgradeUser, getAllUsers, getUser, getUserProfiles, toggleActivationProfile, updateLockState } from '../models/user.js';
+import { createProfile, createUser, deleteUser, downgradeUser, getAllUsers, getUser, getUserProfiles, toggleActivationProfile, updateLockState, updateUser } from '../models/user.js';
 
 
 /**
@@ -271,6 +271,81 @@ export const downgrade = async (req, res) => {
                 ok: false,
                 errors: [
                     'Error al modificar el usuario.'
+                ]
+            }
+        );
+    }
+}
+
+/**
+ * Unlocks a profile session
+ * @param {*} req 
+ * @param {*} res 
+ */
+
+export const deleteUserByCode = async(req, res) => {
+    const { userCode } =req.params;
+
+    try {
+        
+        await deleteUser(userCode);
+        return res.status(200).send({
+            ok: true
+        });
+
+    } catch (error) {
+        return res.status(500).send(
+            {
+                ok: false,
+                errors: [
+                    'Error al eliminar usuario.'
+                ]
+            }
+        );
+    }
+}
+
+/**
+ * Unlocks a profile session
+ * @param {*} req 
+ * @param {*} res 
+ */
+
+export const updateUserByCode = async (req,res) => {
+    let { plan,
+        role,
+        user,
+        email,
+        password,
+        name,
+        lastName,
+        active
+    } = req.body;
+
+    const { userCode } =req.params;
+
+
+    try {
+        // Run everything using a transaction
+
+        // Call the database creation for user
+        let updatedUser = await updateUser(plan, role, user, email, password, name, lastName, active,userCode)
+
+        // Return the response
+        return res.status(201).send(
+            {
+                ok: true,
+                user: updatedUser
+            }
+        );
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send(
+            {
+                ok: false,
+                errors: [
+                    'Error al modificar usuario.'
                 ]
             }
         );
