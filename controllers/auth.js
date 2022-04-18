@@ -30,7 +30,7 @@ export const registerUser = async (req, res) => {
             let createdProfile = await createProfile(createdUser.userCode, createdUser.user, transaction);
             // Return the response
 
-            const token = await generarJWT(createdUser.userCode);
+            const token = await generarJWT(createdUser.userCode, createdUser.role);
 
             return res.status(201).send(
                 {
