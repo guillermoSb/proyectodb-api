@@ -160,3 +160,10 @@ ORDER BY t DESC) AS t
     return report;
 }
 
+
+export const createReportEvents = async () => {
+    const report = await DatabaseManager.knex.select('*').fromRaw(`
+    (SELECT * FROM operations) AS t
+    `)
+    return report;
+}
