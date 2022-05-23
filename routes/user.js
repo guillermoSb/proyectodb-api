@@ -11,7 +11,7 @@ const router = Router();    // Create the router
 
 router.get('/'/*, [validarJWT]*/, getUsers);  // Retreive a list of all users
 router.post(
-    '/',
+    '/:adminId',
     [
         check('email', 'El correo no es valido').isEmail(),
         check('user', 'El nombre de usuario es requerido').notEmpty(),
@@ -73,7 +73,7 @@ router.get(
 );
 
 router.post(
-    '/toggle/activation/:profileCode', [
+    '/toggle/activation/:profileCode/:userId', [
     validarJWT,
     check('profileCode', 'El profileCode es requerido').isNumeric(),
     validateFields
@@ -92,7 +92,7 @@ router.post(
 
 
 router.delete(
-    '/:userCode',
+    '/:userCode/:userId',
     [
         param('userCode', 'El userCode debe ser un numero').isNumeric(),
         param('userCode').custom(validateUserExists),
@@ -110,7 +110,7 @@ router.get(
 );
 
 router.post(
-    '/:userCode',
+    '/:userCode/:adminId',
     [
         check('email', 'El correo no es valido').isEmail(),
         check('user', 'El nombre de usuario es requerido').notEmpty(),

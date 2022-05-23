@@ -18,18 +18,18 @@ router.get('/series/:seriesCode', [
     validateFields
 ], getAdForSeries);
 
-router.post('/advertisers', [
+router.post('/advertisers/:adminId', [
     check('name', 'El nombre es requerido').notEmpty(),
     validateFields
 ], postAdvertiser);
 
-router.put('/advertisers/:advertiserCode', [
+router.put('/advertisers/:advertiserCode/:adminId', [
     check('name', 'El nombre es requerido').notEmpty(),
     check('advertiserCode', 'El codigo es requerido').notEmpty().isNumeric(),
     validateFields
 ], putAdvertiser);
 
-router.delete('/advertisers/:advertiserCode', [
+router.delete('/advertisers/:advertiserCode/:adminId', [
     check('advertiserCode', 'El codigo es requerido').notEmpty().isNumeric(),
     validateFields
 ], removeAdvertiser);
