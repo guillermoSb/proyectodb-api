@@ -18,6 +18,7 @@ export class Server {
         admin: '/api/admin',
         ads: '/api/ads',
         reports: '/api/reports',
+        inventario: '/api'
     }
 
     constructor() {
@@ -45,7 +46,6 @@ export class Server {
      * Init the api listening on the given port.
      */
     listen() {
-
         // TODO: Change the port where the app is listening using .env
         this.app.listen(8080, () => {
             console.log(`Servidor escuchando en el puerto: ${8080}`);

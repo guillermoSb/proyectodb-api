@@ -20,6 +20,7 @@ router.post(
         check('password', 'La contraseña debe de tener al menos 6 caracteres.').isLength({ min: 6 }),
         check('plan', 'El plan es requerido.').notEmpty(),
         check('plan', 'Las opciones válidas para un plan son: basic, standard o advanced').isIn(['basic', 'standard', 'advanced']),
+        check('role', 'El rol del usuario es necesario.').notEmpty().isIn(['user', 'advertiser', 'admin']),
         check('email').custom(validateEmailUnique),
         check('user').custom(validateUserUnique),
         validateFields
@@ -73,19 +74,19 @@ router.get(
 
 router.post(
     '/toggle/activation/:profileCode', [
-        validarJWT,
-        check('profileCode', 'El profileCode es requerido').isNumeric(),
-        validateFields
-    ],
+    validarJWT,
+    check('profileCode', 'El profileCode es requerido').isNumeric(),
+    validateFields
+],
     toggleActivateProfile
 );
 
 
 router.post(
     '/downgrade/:userCode', [
-        check('userCode', 'El userCode es requerido').isNumeric(),
-        validateFields
-    ],
+    check('userCode', 'El userCode es requerido').isNumeric(),
+    validateFields
+],
     downgrade
 );
 
@@ -110,20 +111,20 @@ router.get(
 
 router.post(
     '/:userCode',
-        [
-            check('email', 'El correo no es valido').isEmail(),
-            check('user', 'El nombre de usuario es requerido').notEmpty(),
-            check('plan', 'El plan es requerido.').notEmpty(),
-            check('plan', 'Las opciones válidas para un plan son: basic, standard o advanced').isIn(['basic', 'standard', 'advanced']),
-            check('email').notEmpty(),
-            check('role').notEmpty(),
-            check('user').notEmpty(),
-            param('userCode', 'El userCode debe ser un numero').isNumeric(),
-            param('userCode' ).custom(validateUserExists),
-            validateFields
-        ],
-        updateUserByCode
-    
+    [
+        check('email', 'El correo no es valido').isEmail(),
+        check('user', 'El nombre de usuario es requerido').notEmpty(),
+        check('plan', 'El plan es requerido.').notEmpty(),
+        check('plan', 'Las opciones válidas para un plan son: basic, standard o advanced').isIn(['basic', 'standard', 'advanced']),
+        check('email').notEmpty(),
+        check('role').notEmpty(),
+        check('user').notEmpty(),
+        param('userCode', 'El userCode debe ser un numero').isNumeric(),
+        param('userCode').custom(validateUserExists),
+        validateFields
+    ],
+    updateUserByCode
+
 )
 
 export default router;
