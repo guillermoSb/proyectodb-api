@@ -38,7 +38,7 @@ router.get('/advertisers', getAdvertisers)
 
 
 router.get('/advertisers/:advertiserCode/ads', getAdvertiserAds);
-router.post('/advertisers/:advertiserCode/ads',
+router.post('/advertisers/:advertiserCode/ads/:adminId',
     [
         check('title', 'El titulo es requerido').notEmpty(),
         check('url', 'El url es requerido').notEmpty(),
@@ -47,7 +47,7 @@ router.post('/advertisers/:advertiserCode/ads',
     ],
     createAd);
 
-router.delete('/advertisers/:advertiserCode/ads/:adCode', [
+router.delete('/advertisers/:advertiserCode/ads/:adCode/:adminId', [
     check('advertiserCode', 'El codigo del anunciante es requerido').notEmpty().isNumeric(),
     check('adCode', 'El codigo del anuncio es requerido').notEmpty().isNumeric(),
     validateFields

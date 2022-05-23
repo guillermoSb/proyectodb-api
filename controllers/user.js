@@ -114,6 +114,7 @@ export const postProfileByUserId = async (req, res) => {
     const { userCode } = req.params;  // userCode
     const { name } = req.body;    // Profile name
     try {
+        await changeAdmin('');
         await DatabaseManager.knex.transaction(async transaction => {
             // Call the database creation for user
             const createdProfile = await createProfile(userCode, name, transaction)
@@ -127,6 +128,7 @@ export const postProfileByUserId = async (req, res) => {
         });
 
     } catch (error) {
+        console.log(error);
         return res.status(500).send(
             {
                 ok: false,

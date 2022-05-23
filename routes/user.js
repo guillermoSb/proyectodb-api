@@ -92,7 +92,7 @@ router.post(
 
 
 router.delete(
-    '/:userCode/:userId',
+    '/:userCode/:adminId',
     [
         param('userCode', 'El userCode debe ser un numero').isNumeric(),
         param('userCode').custom(validateUserExists),

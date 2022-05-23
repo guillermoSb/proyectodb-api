@@ -93,6 +93,7 @@ export const createProfile = async (userCode, name, transaction) => {
         userCode,
         name
     }
+    console.log(userCode, name);
     const dbProfile = await transaction('profiles').insert(profileObject, ['*'])    // Create profile on the db
 
     return dbProfile[0];
