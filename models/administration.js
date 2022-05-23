@@ -12,3 +12,9 @@ import { hashPassword } from '../utils/password.js';
 
 }
 
+/**
+ * @param {string} adminId
+ */
+export const changeAdmin = async (adminId) => {
+    await DatabaseManager.knex.schema.raw('CALL store_admin_user(?)',[adminId,]);
+}

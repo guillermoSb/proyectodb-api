@@ -1,4 +1,5 @@
 import { DatabaseManager } from '../database/manager.js';
+import { changeAdmin } from '../models/administration.js';
 import {
     getAllFavoriteMovies, removeMovie, getAllMoviesByGenre, getAllMovies, addNewFavoriteMovie, checkMovie, createSeries, getAllSeries, getAllSeriesByGenre, markFavoriteSeries, unmarkFavoriteSeries, getAllFavoriteSeries, getSeriesById, unmarkFavoriteMovie, getMovieById, createMovieFinishedActivity, fetchFinishedMovies, createEpisodeFinishedActivity, fetchFinishedSeries, createEpisodeStartedActivity, createMovieStartedActivity,
     fetchStartedMovies, fetchStartedSeries, searchContent, removeEpisode,
@@ -89,8 +90,10 @@ export const getAllSeriesWithoutGenre = async (req, res) => {
 export const modifyMovie = async (req, res) => {
     try {
         const data = req.body;
-        const { movieCode } = req.params;
+        const { movieCode,adminId } = req.params;
+        await changeAdmin(adminId);
         await updateMovie(movieCode, data);
+        await changeAdmin('');
         res.status(200).send({
             ok: true,
         });
@@ -142,7 +145,10 @@ export const modifySeries = async (req, res) => {
  */
 export const createMovie = async (req, res) => {
     try {
+        const {adminId} = req.params;
+        await changeAdmin(adminId);
         await insertMovie(req.body);
+        await changeAdmin('');
         return res.status(201).send({
             ok: true
         })
@@ -164,9 +170,11 @@ export const createMovie = async (req, res) => {
  * @param {*} res 
  */
 export const deleteMovie = async (req, res) => {
-    const { movieCode } = req.params;
+    const { movieCode, adminId } = req.params;
     try {
+        await changeAdmin(adminId);
         await removeMovie(movieCode);
+        await changeAdmin('');
         res.status(200).send({
             ok: true,
         });
