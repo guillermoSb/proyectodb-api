@@ -43,7 +43,7 @@ const router = Router();
 router.get('/movies', getMovies);
 
 router.post(
-    '/movies',
+    '/movies/:adminId',
     [
         check('genre').custom(validateGenreExists),
         check('categories').notEmpty().custom(validateCategoryExists),
@@ -60,7 +60,7 @@ router.post(
     createMovie
 );
 
-router.put('/movies/:movieCode',
+router.put('/movies/:movieCode/:adminId',
     [
         check('genre').custom(validateGenreExists),
         check('categories').notEmpty().custom(validateCategoryExists),
@@ -93,7 +93,7 @@ router.put('/series/:seriesCode',
     modifySeries
 )
 
-router.delete('/movies/:movieCode',
+router.delete('/movies/:movieCode/:adminId',
     [
         check('movieCode', 'El codigo de la pelicula debe ser un número').isNumeric().notEmpty(),
         validateFields

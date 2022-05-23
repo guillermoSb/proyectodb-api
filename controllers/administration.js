@@ -1,5 +1,5 @@
 import { DatabaseManager } from '../database/manager.js';
-import { addFailedLog } from '../models/administration.js';
+import { addFailedLog, changeAdmin } from '../models/administration.js';
 
 
 /**
@@ -24,6 +24,28 @@ export const failedLog = async (req, res) => {
                 ok: false,
                 errors: [
                     'No se pudo agregar ingreso fallido'
+                ]
+            }
+        );
+    }
+
+}
+
+export const changeadmin = async (req, res) => {
+
+    const { adminId } = req.body;
+
+    try {
+        await changeAdmin(adminId.toString());
+        return res.status(200).send({
+            ok: true
+        })
+    } catch (error) {
+        return res.status(500).send(
+            {
+                ok: false,
+                errors: [
+                    'No se pudo modificar el usuario administrador.'
                 ]
             }
         );
