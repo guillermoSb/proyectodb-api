@@ -9,11 +9,11 @@ import { generateMoviesSimulation } from '../models/content.js';
 export const contentSimulation = async (req, res) => {
     try {
         const { date, quantity } = req.body;
-        const simulation = await generateMoviesSimulation(date, quantity);
+        await generateMoviesSimulation(date, quantity);
 
         return res.status(200).send({
             ok: true, data: {
-                message: `Created ${quantity} random records`
+                message: `Se han creado ${quantity} vistas aleatorias`
             }
         });
     } catch (error) {
