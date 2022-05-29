@@ -838,12 +838,15 @@ export const generateMoviesSimulation = async (date, quantity) => {
         const finished = Math.floor(Math.random() * 2) === 1; // Boolean indicating if the user has finished
         const movieCode = (await DatabaseManager.knex('movies').select('movieCode').offset(randomMovieOffset).limit(1))[0].movieCode;
         const profileCode = (await DatabaseManager.knex('profiles').select('profileCode').offset(randomUserOffset).limit(1))[0].profileCode;
+        const randomHour = Math.floor(Math.random() * 24);
+        const randomDate = new Date(date);
+        randomDate.setHours(randomHour);
 
         await DatabaseManager.knex('userMovieActivities').insert({
             movieCode,
             finished,
             profileCode,
-            startedAt: date
+            startedAt: randomDate
         })
     }
 
