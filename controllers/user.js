@@ -1,6 +1,6 @@
 import { DatabaseManager } from '../database/manager.js';
 import { createProfile, createUser, deleteUser, downgradeUser, getAllUsers, getUser, getUserProfiles, toggleActivationProfile, updateLockState, updateUser } from '../models/user.js';
-
+import { changeAdmin } from '../models/administration.js';
 
 /**
  * Retreive all the users
@@ -45,12 +45,15 @@ export const postUser = async (req, res) => {
         active
     } = req.body;
 
+    const { adminId } = req.params;
+
     try {
         // Run everything using a transaction
         await DatabaseManager.knex.transaction(async transaction => {
             // Call the database creation for user
+            await changeAdmin(adminId);
             let createdUser = await createUser(plan, role, user, email, password, name, lastName, active, transaction)
-
+            await changeAdmin('');
             // Return the response
             return res.status(201).send(
                 {
@@ -111,6 +114,7 @@ export const postProfileByUserId = async (req, res) => {
     const { userCode } = req.params;  // userCode
     const { name } = req.body;    // Profile name
     try {
+        await changeAdmin('');
         await DatabaseManager.knex.transaction(async transaction => {
             // Call the database creation for user
             const createdProfile = await createProfile(userCode, name, transaction)
@@ -124,6 +128,7 @@ export const postProfileByUserId = async (req, res) => {
         });
 
     } catch (error) {
+        console.log(error);
         return res.status(500).send(
             {
                 ok: false,
@@ -216,10 +221,12 @@ export const unlockProfile = async (req, res) => {
  * @param {*} res 
  */
 export const toggleActivateProfile = async (req, res) => {
-    const { profileCode } = req.params;
+    const { profileCode, adminId } = req.params;
 
     try {
+        await changeAdmin(adminId);
         await toggleActivationProfile(profileCode)
+        await changeAdmin('');
         return res.status(200).send({
             ok: true
         });
@@ -284,11 +291,12 @@ export const downgrade = async (req, res) => {
  */
 
 export const deleteUserByCode = async(req, res) => {
-    const { userCode } =req.params;
+    const { userCode, adminId } =req.params;
 
     try {
-        
+        await changeAdmin(adminId);
         await deleteUser(userCode);
+        await changeAdmin('');
         return res.status(200).send({
             ok: true
         });
@@ -321,15 +329,16 @@ export const updateUserByCode = async (req,res) => {
         active,
     } = req.body;
 
-    const { userCode } =req.params;
+    const { userCode, adminId } =req.params;
 
 
     try {
         // Run everything using a transaction
 
         // Call the database creation for user
+        await changeAdmin(adminId);
         let updatedUser = await updateUser(plan, role, user, email, name, lastName, active,userCode)
-
+        await changeAdmin('');
         // Return the response
         return res.status(201).send(
             {

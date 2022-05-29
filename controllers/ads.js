@@ -2,6 +2,7 @@ import {
     getMovieAd, getSeriesAd, getAllAdvertisers, getAllAds,
     createAdvertiser, deleteAdvertiser, modifyAdvertiser, insertAd, deleteAd, linkMovieWithAd, linkSeriesWithAd
 } from '../models/ads.js';
+import { changeAdmin } from '../models/administration.js';
 
 /**
  * Gets an ad for a movie
@@ -104,7 +105,10 @@ export const getAdvertiserAds = async (req, res) => {
 export const postAdvertiser = async (req, res) => {
     try {
         const data = req.body;
+        const {adminId} = req.params;
+        await changeAdmin(adminId);
         await createAdvertiser(data);
+        await changeAdmin('');
         return res.status(200).send({
             ok: true
         })
@@ -125,8 +129,10 @@ export const postAdvertiser = async (req, res) => {
 export const putAdvertiser = async (req, res) => {
     try {
         const data = req.body;
-        const { advertiserCode } = req.params;
+        const { advertiserCode, adminId } = req.params;
+        await changeAdmin(adminId);
         await modifyAdvertiser(advertiserCode, data);
+        await changeAdmin('');
         return res.status(200).send({
             ok: true
         })
@@ -148,8 +154,10 @@ export const putAdvertiser = async (req, res) => {
  */
 export const removeAdvertiser = async (req, res) => {
     try {
-        const { advertiserCode } = req.params;
+        const { advertiserCode, adminId } = req.params;
+        await changeAdmin(adminId);
         await deleteAdvertiser(advertiserCode);
+        await changeAdmin('');
         return res.status(200).send({ ok: true })
     } catch (error) {
         return res.status(500).send({
@@ -167,8 +175,10 @@ export const removeAdvertiser = async (req, res) => {
  */
 export const removeAd = async (req, res) => {
     try {
-        const { adCode } = req.params;
+        const { adCode,adminId } = req.params;
+        await changeAdmin(adminId);
         await deleteAd(adCode);
+        await changeAdmin('');
         return res.status(200).send({ ok: true })
     } catch (error) {
         return res.status(500).send({
@@ -189,8 +199,10 @@ export const removeAd = async (req, res) => {
 export const createAd = async (req, res) => {
     try {
         const data = req.body;
-        const { advertiserCode } = req.params;
+        const { advertiserCode, adminId } = req.params;
+        await changeAdmin(adminId);
         await insertAd(advertiserCode, data);
+        await changeAdmin('');
         return res.status(200).send({ ok: true });
     } catch (error) {
 

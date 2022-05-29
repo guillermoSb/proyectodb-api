@@ -1,4 +1,4 @@
-import { createReport1, createReport4, createReport5, createReport3Director, createReport3Actors, createReport2 } from '../models/reports.js';
+import { createReport1, createReport4, createReport5, createReport3Director, createReport3Actors, createReport2, createReportEvents } from '../models/reports.js';
 
 /**
  * Report 1
@@ -160,3 +160,27 @@ export const report5 = async (req, res) => {
         })
     }
 }
+
+/**
+ * Report 5
+ * @param {*} req 
+ * @param {*} res 
+ */
+ export const reportEvents = async (req, res) => {
+    try {
+        const report = await createReportEvents();
+        return res.status(200).send({
+            ok: true,
+            report
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).send({
+            ok: false,
+            errors: [
+                'No se pudo obtener el reporte'
+            ]
+        })
+    }
+
+ }
