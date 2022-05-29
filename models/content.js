@@ -821,3 +821,32 @@ export const updateSeries = async (seriesCode, values) => {
 export const removeEpisode = async (episodeCode) => {
     await DatabaseManager.knex('episodes').delete().where({ episodeCode });
 }
+
+
+/**
+ * Simulate views on the movies table
+ * @param {*} date 
+ * @param {*} quantity 
+ */
+export const generateMoviesSimulation = async (date, quantity) => {
+    const movieCount = (await DatabaseManager.knex('movies').count())[0].count;
+    const userCount = (await DatabaseManager.knex('profiles').count())[0].count;
+    // Create random movie quantities
+    for (let i = 0; i < quantity; i++) {
+        const randomMovieOffset = Math.floor(Math.random() * (parseInt(movieCount)));    // Random offset
+        const randomUserOffset = Math.floor(Math.random() * (parseInt(userCount)));    // Random offset
+        const finished = Math.floor(Math.random() * 2) === 1; // Boolean indicating if the user has finished
+        const movieCode = (await DatabaseManager.knex('movies').select('movieCode').offset(randomMovieOffset).limit(1))[0].movieCode;
+        const profileCode = (await DatabaseManager.knex('profiles').select('profileCode').offset(randomUserOffset).limit(1))[0].profileCode;
+
+        await DatabaseManager.knex('userMovieActivities').insert({
+            movieCode,
+            finished,
+            profileCode,
+            startedAt: date
+        })
+    }
+
+
+
+}
