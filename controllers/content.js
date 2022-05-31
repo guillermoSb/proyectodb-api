@@ -90,7 +90,7 @@ export const getAllSeriesWithoutGenre = async (req, res) => {
 export const modifyMovie = async (req, res) => {
     try {
         const data = req.body;
-        const { movieCode,adminId } = req.params;
+        const { movieCode, adminId } = req.params;
         await changeAdmin(adminId);
         await updateMovie(movieCode, data);
         await changeAdmin('');
@@ -145,7 +145,7 @@ export const modifySeries = async (req, res) => {
  */
 export const createMovie = async (req, res) => {
     try {
-        const {adminId} = req.params;
+        const { adminId } = req.params;
         await changeAdmin(adminId);
         await insertMovie(req.body);
         await changeAdmin('');
@@ -252,7 +252,7 @@ export const removeFavoriteMovie = async (req, res) => {
             ok: true
         })
     } catch (error) {
-
+        console.log(error);
         return res.status(500).send(
             {
                 ok: false,
@@ -753,6 +753,7 @@ export const getContentBySearch = async (req, res) => {
             content,
         })
     } catch (error) {
+        console.log(error);
         return res.status(500).send(
             {
                 ok: false,

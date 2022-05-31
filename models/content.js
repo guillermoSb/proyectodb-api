@@ -426,12 +426,24 @@ const searchSeries = async (value, dataLabels) => {
 }
 
 /**
+ * 
+ * @param {*} value 
+ */
+export const saveSearch = async (search) => {
+    await DatabaseManager.knex('searches').insert({
+        search,
+    }, '*');
+}
+
+/**
  * @param {number} value
  */
 export const searchContent = async (value) => {
 
     const dataLabelsMovies = ['title', 'movies.movieCode', 'genre', 'categories as category', 'studio', 'duration', 'publishedAt', 'description', 'rating', 'coverUrl', 'director']
     const dataLabelsSeries = ['title', 'series.seriesCode', 'genre', 'categories as category', 'studio', 'publishedAt', 'description', 'rating', 'coverUrl', 'director']
+
+    await saveSearch(value);
 
     const movies = searchMovies(value, dataLabelsMovies);
 
