@@ -9,7 +9,7 @@ DECLARE
 		hour_max	TIME;
 BEGIN
 
-	DROP TABLE top_movies_hour;	
+	DROP TABLE IF EXISTS top_movies_hour;	
 	CREATE TABLE top_movies_hour (
 		movieCode INT,
 		views INT,
@@ -91,3 +91,7 @@ BEGIN
 	END LOOP;
 END;
 $$
+
+
+-- Reporte 
+

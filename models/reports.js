@@ -183,3 +183,22 @@ export const createReport6 = async (month) => {
     `, [month,])
     return report;
 }
+
+/**
+ * Top 20 peliculas que no se han terminado para un rango de fechas.
+ * @param {*} startDate 
+ * @param {*} endDate 
+ */
+export const createReport9 = async (startDate, endDate) => {
+    // Call the stored procedure
+    await DatabaseManager.knex.schema.raw('CALL get_top_not_finished_movies(?,?);', [startDate, endDate,]);
+    const report = await DatabaseManager.knex.select('*').fromRaw(`
+        (SELECT moviecode, title, count
+        FROM	top_not_finished_movies_table
+        JOIN 	movies
+        ON		movies."movieCode" = top_not_finished_movies_table.moviecode
+        WHERE	finish = false
+        LIMIT	20) AS t
+    `, [])
+    return report;
+}
