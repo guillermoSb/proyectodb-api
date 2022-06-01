@@ -211,7 +211,7 @@ export const createReport7 = async () => {
 }
 
 /**
- * Top - Administradores con mas actividad
+ * Top 5 - Administradores con mas actividad top 5 de los administradores que más modificaciones realizan en las cuentas de usuario 
  * @param {*} startDate 
  * @param {*} endDate 
  */

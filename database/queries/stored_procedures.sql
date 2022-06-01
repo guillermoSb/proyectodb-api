@@ -113,6 +113,7 @@ BEGIN
 		SELECT		admin_id, COUNT(operation) as ops_q, operation_date
 		FROM		operations
 		WHERE		table_name = 'users'
+		AND			operation = 'UPDATE'
 		GROUP BY	admin_id, operation_date
 		ORDER BY 	COUNT(operation) DESC;
 END;
