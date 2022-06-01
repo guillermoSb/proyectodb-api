@@ -23,5 +23,3 @@ FROM		searches
 GROUP BY	search
 ORDER BY	search_count DESC
 LIMIT 10;
-
-SELECT * FROM search_view;

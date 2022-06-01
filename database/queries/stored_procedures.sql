@@ -93,7 +93,33 @@ END;
 $$
 
 
--- Reporte 
+-- Reporte 8
+CREATE OR REPLACE PROCEDURE get_top_admins() 
+LANGUAGE PLPGSQL 
+AS $$
+BEGIN
+
+	DROP TABLE top_admins_activities;
+	CREATE TABLE top_admins_activities (
+		adminCode		text,
+		adm_name		VARCHAR(50), 
+		ops_quantity 	INT,
+		ops_date		DATE
+	);
+	
+	CREATE INDEX	index_op_date
+	ON				top_admins_activities(ops_date);
+
+	INSERT INTO top_admins_activities
+		SELECT		admin_id, admin_name, COUNT(operation) as ops_q, operation_date
+		FROM		operations
+		WHERE		table_name = 'users'
+		AND			operation = 'UPDATE'
+		GROUP BY	admin_id, operation_date, admin_name
+		ORDER BY 	COUNT(operation) DESC;
+END;
+$$
+
 
 
 CREATE TABLE searches(

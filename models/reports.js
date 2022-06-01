@@ -202,9 +202,28 @@ export const createReport9 = async (startDate, endDate) => {
     `, [])
     return report;
 }
+
 export const createReport7 = async () => {
     const report = await DatabaseManager.knex.select('*').fromRaw(`
         (SELECT * FROM search_view) AS t
         `)
+    return report;
+}
+
+/**
+ * Top 5 - Administradores con mas actividad top 5 de los administradores que más modificaciones realizan en las cuentas de usuario 
+ * @param {*} startDate 
+ * @param {*} endDate 
+ */
+ export const createReport8 = async (startDate, endDate) => {
+    // Call the stored procedure
+    await DatabaseManager.knex.schema.raw('CALL get_top_admins()', []);
+    const report = await DatabaseManager.knex.select('*').fromRaw(`
+        (SELECT	*
+        FROM	top_admins_activities
+        WHERE	ops_date >= ?
+        AND		ops_date <= ?
+        LIMIT 5) AS t
+    `, [startDate, endDate,])
     return report;
 }
