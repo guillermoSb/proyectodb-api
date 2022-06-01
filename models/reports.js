@@ -184,7 +184,6 @@ export const createReport6 = async (month) => {
     return report;
 }
 
-<<<<<<< HEAD
 /**
  * Top 20 peliculas que no se han terminado para un rango de fechas.
  * @param {*} startDate 
@@ -201,12 +200,11 @@ export const createReport9 = async (startDate, endDate) => {
         WHERE	finish = false
         LIMIT	20) AS t
     `, [])
-=======
-
+    return report;
+}
 export const createReport7 = async () => {
     const report = await DatabaseManager.knex.select('*').fromRaw(`
         (SELECT * FROM search_view) AS t
         `)
->>>>>>> 930bf17e386458286250405d16711310a85a929f
     return report;
 }
