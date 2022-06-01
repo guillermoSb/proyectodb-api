@@ -1,4 +1,4 @@
-import { createReport1, createReport4, createReport5, createReport3Director, createReport3Actors, createReport2, createReportEvents, createReport6, createReport7, createReport9 } from '../models/reports.js';
+import { createReport1, createReport4, createReport5, createReport3Director, createReport3Actors, createReport2, createReportEvents, createReport6, createReport7, createReport8, createReport9 } from '../models/reports.js';
 
 /**
  * Report 1
@@ -201,6 +201,39 @@ export const report6 = async (req, res) => {
         })
     } catch (error) {
         console.log(error);
+        return res.status(500).send({
+            ok: false,
+            errors: [
+                'No se pudo obtener el reporte'
+            ]
+        })
+    }
+}
+
+/**
+ * Report 8 - Top 10 - Administradores con más actividad
+ * @param {*} req 
+ * @param {*} res 
+ */
+ export const report8 = async (req, res) => {
+    const { startDate, endDate } = req.query;
+    try {
+        if ((new Date(startDate)) > (new Date(endDate))) {
+            return res.status(400).send({
+                ok: false,
+                errors: [
+                    'La fecha es menor'
+                ]
+            })
+        }
+
+        const report = await createReport8(startDate, endDate);
+        return res.status(200).send({
+            ok: true,
+            report
+        })
+    } catch (error) {
+        console.log(error)
         return res.status(500).send({
             ok: false,
             errors: [
