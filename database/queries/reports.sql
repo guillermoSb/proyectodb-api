@@ -15,3 +15,13 @@ FROM
 GROUP BY genre
 ORDER BY total DESC
 LIMIT 10;
+
+-- Reporte 7 - Top 10 de los términos que los usuarios buscan 
+CREATE VIEW search_view AS
+SELECT		search, COUNT(search) as search_count
+FROM		searches
+GROUP BY	search
+ORDER BY	search_count DESC
+LIMIT 10;
+
+SELECT * FROM search_view;

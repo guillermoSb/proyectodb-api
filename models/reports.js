@@ -183,3 +183,11 @@ export const createReport6 = async (month) => {
     `, [month,])
     return report;
 }
+
+
+export const createReport7 = async () => {
+    const report = await DatabaseManager.knex.select('*').fromRaw(`
+        (SELECT * FROM search_view) AS t
+        `)
+    return report;
+}
