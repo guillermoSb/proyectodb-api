@@ -63,6 +63,7 @@ export const postUser = async (req, res) => {
             );
         });
     } catch (error) {
+        console.log(error);
         return res.status(500).send(
             {
                 ok: false,
@@ -290,8 +291,8 @@ export const downgrade = async (req, res) => {
  * @param {*} res 
  */
 
-export const deleteUserByCode = async(req, res) => {
-    const { userCode, adminId } =req.params;
+export const deleteUserByCode = async (req, res) => {
+    const { userCode, adminId } = req.params;
 
     try {
         await changeAdmin(adminId);
@@ -319,7 +320,7 @@ export const deleteUserByCode = async(req, res) => {
  * @param {*} res 
  */
 
-export const updateUserByCode = async (req,res) => {
+export const updateUserByCode = async (req, res) => {
     let { plan,
         role,
         user,
@@ -329,7 +330,7 @@ export const updateUserByCode = async (req,res) => {
         active,
     } = req.body;
 
-    const { userCode, adminId } =req.params;
+    const { userCode, adminId } = req.params;
 
 
     try {
@@ -337,7 +338,7 @@ export const updateUserByCode = async (req,res) => {
 
         // Call the database creation for user
         await changeAdmin(adminId);
-        let updatedUser = await updateUser(plan, role, user, email, name, lastName, active,userCode)
+        let updatedUser = await updateUser(plan, role, user, email, name, lastName, active, userCode)
         await changeAdmin('');
         // Return the response
         return res.status(201).send(

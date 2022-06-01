@@ -226,7 +226,7 @@ export const report9 = async (req, res) => {
                 ]
             })
         }
-
+        console.log(startDate, endDate)
         const report = await createReport9(startDate, endDate);
         return res.status(200).send({
             ok: true,

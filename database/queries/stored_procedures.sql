@@ -95,3 +95,20 @@ $$
 
 -- Reporte 
 
+
+CREATE TABLE searches(
+	date	TIMESTAMP WITH TIME ZONE,
+	search	TEXT
+);
+
+DROP TABLE searches;
+
+SELECT	*
+FROM	searches;
+
+CREATE VIEW search_view AS
+SELECT		search, COUNT(search) as search_count
+FROM		searches
+GROUP BY	search
+ORDER BY	search_count DESC
+LIMIT 10;

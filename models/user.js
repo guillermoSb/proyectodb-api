@@ -26,11 +26,9 @@ export const createUser = async (plan, role, user, email, password, name, lastNa
         }
     }
 
-   
-
-    const dbUser = await transaction('users').insert(userObject, ['*']);    // Create the user on the db
-    delete dbUser[0].password; // Do not return the password
-    return dbUser[0];  // Return the created user
+    const dbUser = await transaction('users').insert(userObject, []);    // Create the user on the db
+    delete userObject.password; // Do not return the password
+    return userObject;  // Return the created user
 
 }
 
