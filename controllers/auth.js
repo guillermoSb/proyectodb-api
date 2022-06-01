@@ -56,6 +56,54 @@ export const registerUser = async (req, res) => {
   }
 };
 
+
+/**
+ * Simulate views on the movies table
+ * @param {*} date 
+ * @param {*} quantity 
+ */
+ export const generateUserSimulation = async (date, quantity) => {
+    // Create random movie quantities
+    try {
+        await changeAdmin('');
+        for (let i = 0; i < quantity; i++) {
+
+            var chars = 'abcdefghijklmnopqrstuvwxyz1234567890';
+            var string = '';
+            for(var ii=0; ii<15; ii++){
+                string += chars[Math.floor(Math.random() * chars.length)];
+            }
+            const user = string;
+            const email = string + '@gmail.com'; 
+            const password = string + 'password';
+            const name = string;
+            const lastName = string;
+            const active = true;
+            const plan = 'basic';
+            const randomHour = Math.floor(Math.random() * 24);
+            const createdAt = new Date(date);
+            createdAt.setHours(randomHour);
+            const role = 'user';
+            
+            await DatabaseManager.knex.transaction(async (transaction) => {
+                
+
+                let createdUser = await createUser(plan, role, user, email, password, name, lastName, active, transaction, createdAt);
+                // Create default profile
+            
+                await createProfile(
+                    createdUser.userCode,
+                    createdUser.user,
+                    transaction
+                );
+            });
+        } 
+    } catch (error) {
+        console.log(error);
+
+        }
+}
+
 /**
  * Login an user on the system
  * @param {*} req

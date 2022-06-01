@@ -861,7 +861,4 @@ export const generateMoviesSimulation = async (date, quantity) => {
             startedAt: randomDate
         })
     }
-
-
-
 }

@@ -13,11 +13,20 @@ import { checkPassword, hashPassword } from '../utils/password.js';
  * @param {string} active 
  * @param {import("knex").Knex} transaction
  */
-export const createUser = async (plan, role, user, email, password, name, lastName, active, transaction) => {
+export const createUser = async (plan, role, user, email, password, name, lastName, active, transaction, createdAt = null) => {
     const newPass = await hashPassword(password);
-    const userObject = {
+
+    var userObject = {
         user, email, password: newPass, name, lastName, active, plan, role
     }
+
+    if (createdAt) {
+        userObject = {
+            user, email, password: newPass, name, lastName, active, plan, role, createdAt
+        }
+    }
+
+   
 
     const dbUser = await transaction('users').insert(userObject, ['*']);    // Create the user on the db
     delete dbUser[0].password; // Do not return the password
@@ -93,7 +102,7 @@ export const createProfile = async (userCode, name, transaction) => {
         userCode,
         name
     }
-    console.log(userCode, name);
+    //console.log(userCode, name);
     const dbProfile = await transaction('profiles').insert(profileObject, ['*'])    // Create profile on the db
 
     return dbProfile[0];
