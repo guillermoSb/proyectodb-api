@@ -167,3 +167,19 @@ export const createReportEvents = async () => {
     `)
     return report;
 }
+
+/**
+ * Top 5 peliculas vistas entre 9 y 1
+ * @param {*} month 
+ */
+export const createReport6 = async (month) => {
+    await DatabaseManager.knex.schema.raw('CALL get_top_movies_hour()', []);
+    const report = await DatabaseManager.knex.select('*').fromRaw(`
+        (SELECT	moviecode, title, views, hour, month
+        FROM 	top_movies_hour
+        JOIN	movies
+        ON		movies."movieCode" = top_movies_hour.moviecode
+        WHERE month = ?) AS t
+    `, [month,])
+    return report;
+}

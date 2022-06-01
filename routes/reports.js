@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { check, param, query } from 'express-validator';
-import { report1, report4, report5, report3Director, report3Actors, report2, reportEvents } from '../controllers/reports.js';
+import { report1, report4, report5, report3Director, report3Actors, report2, reportEvents, report6 } from '../controllers/reports.js';
 
 import { validateFields } from '../middlewares/request-validator.js';
 
@@ -42,7 +42,14 @@ router.get('/5', [
     validateFields
 ], report5)
 
+router.get('/6', [
+    query('month', 'El mes es necesario').notEmpty(),
+    query('month', 'El mes debe de estar entre 1 y 12').isNumeric().isInt({ min: 1, max: 12 }),
+    validateFields
+], report6)
+
 router.get('/events', [
+
     // param('startDate', 'La fecha inicial es requerida').notEmpty(),
     // param('endDate', 'La fecha final es requerida').notEmpty(),
     validateFields
